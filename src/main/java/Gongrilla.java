@@ -42,7 +42,7 @@ public class Gongrilla {
                     || command.regionMatches(true, 0, "mark ", 0, 5)) {
                 int index = parseTaskIndex(command, "mark", taskCount);
                 if (index == -1) {
-                    System.out.println("Please enter a valid task number.");
+                    System.out.println("No. Gongrilla need real task number.");
                 } else {
                     Task task = tasks[index];
                     task.markDone();
@@ -53,7 +53,7 @@ public class Gongrilla {
                     || command.regionMatches(true, 0, "unmark ", 0, 7)) {
                 int index = parseTaskIndex(command, "unmark", taskCount);
                 if (index == -1) {
-                    System.out.println("Please enter a valid task number.");
+                    System.out.println("No. Gongrilla need real task number.");
                 } else {
                     Task task = tasks[index];
                     task.unmarkDone();
