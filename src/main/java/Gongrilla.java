@@ -11,6 +11,10 @@ public class Gongrilla {
                 " |  (..)  |  \n" +
                 " \\   __   / \n" +
                 "  \\______/  \n";
+
+        String[] tasks = new String[100];
+        int taskCount = 0;
+
         System.out.println(HORIZONTAL_LINE);
         System.out.print(banner);
         System.out.println("Hello! I'm Gongrilla.");
@@ -28,9 +32,16 @@ public class Gongrilla {
                 break;
             }
 
-            System.out.println(command);
+            if (command.equalsIgnoreCase("list")) {
+                for (int i = 0; i < taskCount; i++) {
+                    System.out.println((i + 1) + ". " + tasks[i]);
+                }
+            } else {
+                tasks[taskCount] = command;
+                taskCount++;
+                System.out.println("added: " + command);
+            }
             System.out.println(HORIZONTAL_LINE);
         }
-
     }
 }
