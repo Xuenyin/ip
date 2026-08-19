@@ -1,10 +1,20 @@
 public class Gongrilla {
+    private static final String HORIZONTAL_LINE = "____________________________________________________________";
+
     public static void main(String[] args) {
-        String banner = " ____        _        \n"
-                + "|  _ \\ _   _| | _____ \n"
-                + "| | | | | | | |/ / _ \\\n"
-                + "| |_| | |_| |   <  __/\n"
-                + "|____/ \\__,_|_|\\_\\___|\n";
-        System.out.println(banner);
+        String banner =
+                "  _--==--_  \n" +
+                " / _    _ \\ \n" +
+                " \\        / \n" +
+                " |  (..)  |  \n" +
+                " \\   __   / \n" +
+                "  \\______/  \n";
+        System.out.println(HORIZONTAL_LINE);
+        System.out.print(banner);
+        System.out.println("Hello! I'm Gongrilla.");
+        System.out.println("What can I do for you?");
+        System.out.println(HORIZONTAL_LINE);
+        System.out.println("Bye. Hope to see you again soon!");
+        System.out.println(HORIZONTAL_LINE);
     }
 }
