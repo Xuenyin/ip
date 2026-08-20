@@ -5,7 +5,22 @@ package taskTypes;
  */
 public class Task {
     private final String name;
-    private boolean isDone;
+    private CompletionStatus completionStatus;
+
+    private enum CompletionStatus {
+        NOT_DONE("[ ]"),
+        DONE("[X]");
+
+        private final String marker;
+
+        CompletionStatus(String marker) {
+            this.marker = marker;
+        }
+
+        String getMarker() {
+            return marker;
+        }
+    }
 
     /**
      * Creates an incomplete task with the given description.
@@ -14,7 +29,7 @@ public class Task {
      */
     public Task(String name) {
         this.name = name;
-        this.isDone = false;
+        this.completionStatus = CompletionStatus.NOT_DONE;
     }
 
     public String getName() {
@@ -22,15 +37,15 @@ public class Task {
     }
 
     public String getIsDoneStatus() {
-        return isDone ? "[X]" : "[ ]";
+        return completionStatus.getMarker();
     }
 
     public void markDone() {
-        this.isDone = true;
+        this.completionStatus = CompletionStatus.DONE;
     }
 
     public void unmarkDone() {
-        this.isDone = false;
+        this.completionStatus = CompletionStatus.NOT_DONE;
     }
 
     @Override
