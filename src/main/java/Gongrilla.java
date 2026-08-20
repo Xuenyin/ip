@@ -4,6 +4,7 @@ import taskTypes.Event;
 import taskTypes.Task;
 import taskTypes.Todo;
 
+import java.util.ArrayList;
 import java.util.Scanner;
 
 /**
@@ -24,8 +25,7 @@ public class Gongrilla {
                 " \\   __   / \n" +
                 "  \\______/  \n";
 
-        Task[] tasks = new Task[100];
-        int taskCount = 0;
+        ArrayList<Task> tasks = new ArrayList<>();
 
         System.out.println(HORIZONTAL_LINE);
         System.out.print(banner);
@@ -47,8 +47,8 @@ public class Gongrilla {
             try {
                 if (command.equalsIgnoreCase("list")) {
                     System.out.println("Gongrilla find tasks in list:");
-                    for (int i = 0; i < taskCount; i++) {
-                        Task task = tasks[i];
+                    for (int i = 0; i < tasks.size(); i++) {
+                        Task task = tasks.get(i);
                         System.out.println("  " + (i + 1) + "." + task);
                     }
                 } else if (command.equalsIgnoreCase("deadline")
@@ -66,30 +66,26 @@ public class Gongrilla {
                     if (parts[1].isBlank()) {
                         throw new GongrillaException("No date/time. Gongrilla need know when.");
                     }
-                    ensureTaskCapacity(taskCount, tasks.length);
                     String name = parts[0].trim();
                     String by = parts[1].trim();
                     Deadline deadline = new Deadline(name, by);
-                    tasks[taskCount] = deadline;
-                    taskCount++;
+                    tasks.add(deadline);
 
                     System.out.println("Ooo. New deadline:");
                     System.out.println("  " + deadline);
-                    System.out.println("Gongrilla count " + taskCount + " tasks.");
+                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
                 } else if (command.equalsIgnoreCase("todo")
                         || command.regionMatches(true, 0, "todo ", 0, 5)) {
                     String name = command.substring("todo".length()).trim();
                     if (name.isBlank()) {
                         throw new GongrillaException("Empty task. What Gongrilla do? Give Gongrilla something.");
                     }
-                    ensureTaskCapacity(taskCount, tasks.length);
                     Todo todo = new Todo(name);
-                    tasks[taskCount] = todo;
-                    taskCount++;
+                    tasks.add(todo);
 
                     System.out.println("Ooo. New todo:");
                     System.out.println("  " + todo);
-                    System.out.println("Gongrilla count " + taskCount + " tasks.");
+                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
                 } else if (command.equalsIgnoreCase("event")
                         || command.regionMatches(true, 0, "event ", 0, 6)) {
                     String details = command.substring("event".length()).trim();
@@ -106,36 +102,45 @@ public class Gongrilla {
                         throw new GongrillaException(
                                 "Gongrilla need time. When event start and end?");
                     }
-                    ensureTaskCapacity(taskCount, tasks.length);
                     String name = parts[0].trim();
                     String from = parts[1].trim();
                     String to = parts[2].trim();
 
                     Event event = new Event(name, from, to);
-                    tasks[taskCount] = event;
-                    taskCount++;
+                    tasks.add(event);
 
                     System.out.println("Ooo. New event:");
                     System.out.println("  " + event);
-                    System.out.println("Gongrilla count " + taskCount + " tasks.");
-                } else if (command.equalsIgnoreCase("mark")
-                        || command.regionMatches(true, 0, "mark ", 0, 5)) {
-                    int index = parseTaskIndex(command, "mark", taskCount);
+                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
+                } else if (command.equalsIgnoreCase("delete")
+                        || command.regionMatches(true, 0, "delete ", 0, 7)) {
+                    int index = parseTaskIndex(command, "delete", tasks.size());
                     if (index == -1) {
                         throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
                     } else {
-                        Task task = tasks[index];
+                        Task removedTask = tasks.remove(index);
+                        System.out.println("Gongrilla remove task:");
+                        System.out.println("  " + removedTask);
+                        System.out.println("Now Gongrilla count " + tasks.size() + " tasks in list.");
+                    }
+                } else if (command.equalsIgnoreCase("mark")
+                        || command.regionMatches(true, 0, "mark ", 0, 5)) {
+                    int index = parseTaskIndex(command, "mark", tasks.size());
+                    if (index == -1) {
+                        throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
+                    } else {
+                        Task task = tasks.get(index);
                         task.markDone();
                         System.out.println("Banana! Gongrilla happy.");
                         System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
                     }
                 } else if (command.equalsIgnoreCase("unmark")
                         || command.regionMatches(true, 0, "unmark ", 0, 7)) {
-                    int index = parseTaskIndex(command, "unmark", taskCount);
+                    int index = parseTaskIndex(command, "unmark", tasks.size());
                     if (index == -1) {
                         throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
                     } else {
-                        Task task = tasks[index];
+                        Task task = tasks.get(index);
                         task.unmarkDone();
                         System.out.println("No Banana! Gongrilla sad.");
                         System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
@@ -168,16 +173,4 @@ public class Gongrilla {
         }
     }
 
-    /**
-     * Ensures another task can be stored in the fixed-size task array.
-     *
-     * @param taskCount number of tasks currently stored
-     * @param capacity maximum number of tasks that can be stored
-     * @throws GongrillaException if the task array is full
-     */
-    private static void ensureTaskCapacity(int taskCount, int capacity) throws GongrillaException {
-        if (taskCount >= capacity) {
-            throw new GongrillaException("OOPS!!! The task list is full.");
-        }
-    }
 }
