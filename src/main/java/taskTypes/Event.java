@@ -14,6 +14,12 @@ public class Event extends Task {
     }
 
     @Override
+    public String toDataString() {
+        return "E2 | " + commonDataFields() + " | " + encodeField(from)
+                + " | " + encodeField(to);
+    }
+
+    @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from + " to: " + to + ")";
     }

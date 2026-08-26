@@ -6,6 +6,7 @@
 # Gradle build files
 /.gradle/
 /build/
+/target/
 src/main/resources/docs/
 
 # MacOS custom attributes files created by Finder
@@ -19,3 +20,6 @@ _temp/
 /text-ui-test/ACTUAL.TXT
 text-ui-test/EXPECTED-UNIX.TXT
 .codex/
+
+# Runtime task data
+/data/

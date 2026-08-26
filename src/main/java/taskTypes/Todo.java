@@ -9,6 +9,11 @@ public class Todo extends Task {
     }
 
     @Override
+    public String toDataString() {
+        return "T2 | " + commonDataFields();
+    }
+
+    @Override
     public String toString() {
         return "[T]" + super.toString();
     }

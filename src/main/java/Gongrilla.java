@@ -4,6 +4,8 @@ import taskTypes.Event;
 import taskTypes.Task;
 import taskTypes.Todo;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -12,6 +14,7 @@ import java.util.Scanner;
  */
 public class Gongrilla {
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
+    private static final Storage STORAGE = new Storage(Path.of("data", "gongrilla.txt"));
 
     /**
      * Reads and processes commands until the user enters {@code bye}.
@@ -25,13 +28,21 @@ public class Gongrilla {
                 " \\   __   / \n" +
                 "  \\______/  \n";
 
-        ArrayList<Task> tasks = new ArrayList<>();
-
         System.out.println(HORIZONTAL_LINE);
         System.out.print(banner);
         System.out.println("Ooo");
         System.out.println("Human back. Gongrilla ready.");
         System.out.println(HORIZONTAL_LINE);
+
+        ArrayList<Task> tasks;
+        try {
+            tasks = STORAGE.load();
+        } catch (IOException exception) {
+            System.out.println("Gongrilla cannot read saved tasks: " + exception.getMessage());
+            System.out.println("Fix data file, then start Gongrilla again.");
+            System.out.println(HORIZONTAL_LINE);
+            return;
+        }
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
@@ -69,6 +80,7 @@ public class Gongrilla {
                     String name = parts[0].trim();
                     String by = parts[1].trim();
                     Deadline deadline = new Deadline(name, by);
+                    STORAGE.appendAdd(deadline);
                     tasks.add(deadline);
 
                     System.out.println("Ooo. New deadline:");
@@ -81,6 +93,7 @@ public class Gongrilla {
                         throw new GongrillaException("Empty task. What Gongrilla do? Give Gongrilla something.");
                     }
                     Todo todo = new Todo(name);
+                    STORAGE.appendAdd(todo);
                     tasks.add(todo);
 
                     System.out.println("Ooo. New todo:");
@@ -107,6 +120,7 @@ public class Gongrilla {
                     String to = parts[2].trim();
 
                     Event event = new Event(name, from, to);
+                    STORAGE.appendAdd(event);
                     tasks.add(event);
 
                     System.out.println("Ooo. New event:");
@@ -118,7 +132,9 @@ public class Gongrilla {
                     if (index == -1) {
                         throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
                     } else {
-                        Task removedTask = tasks.remove(index);
+                        Task removedTask = tasks.get(index);
+                        STORAGE.appendDelete(index);
+                        tasks.remove(index);
                         System.out.println("Gongrilla remove task:");
                         System.out.println("  " + removedTask);
                         System.out.println("Now Gongrilla count " + tasks.size() + " tasks in list.");
@@ -130,7 +146,10 @@ public class Gongrilla {
                         throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
                     } else {
                         Task task = tasks.get(index);
-                        task.markDone();
+                        if (!task.isDone()) {
+                            STORAGE.appendMark(index);
+                            task.markDone();
+                        }
                         System.out.println("Banana! Gongrilla happy.");
                         System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
                     }
@@ -141,7 +160,10 @@ public class Gongrilla {
                         throw new GongrillaException("Task number bad. Gongrilla look. Gongrilla find nothing.");
                     } else {
                         Task task = tasks.get(index);
-                        task.unmarkDone();
+                        if (task.isDone()) {
+                            STORAGE.appendUnmark(index);
+                            task.unmarkDone();
+                        }
                         System.out.println("No Banana! Gongrilla sad.");
                         System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
                     }
@@ -151,6 +173,9 @@ public class Gongrilla {
                 }
             } catch (GongrillaException exception) {
                 System.out.println(exception.getMessage());
+            } catch (IOException exception) {
+                System.out.println("Gongrilla cannot save that change: " + exception.getMessage());
+                System.out.println("Task list was not changed.");
             }
             System.out.println(HORIZONTAL_LINE);
         }
