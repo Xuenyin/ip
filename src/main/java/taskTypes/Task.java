@@ -4,6 +4,7 @@ import lombok.Getter;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
 /**
  * Represents the shared description and completion state of a task.
@@ -34,7 +35,10 @@ public class Task {
      * @param name description of the task
      */
     public Task(String name) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "Task description cannot be null.");
+        if (name.isBlank()) {
+            throw new IllegalArgumentException("Task description cannot be blank.");
+        }
         this.completionStatus = CompletionStatus.NOT_DONE;
     }
 
