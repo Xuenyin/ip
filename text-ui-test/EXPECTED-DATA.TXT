@@ -1,0 +1,6 @@
+A | T2 | 0 | read+book
+A | D2 | 0 | return+book | June+6th
+A | E2 | 0 | project+meeting | Aug+6th+2pm | 4pm
+M | 0
+X | 1
+U | 0
