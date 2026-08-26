@@ -6,7 +6,14 @@ import taskTypes.Todo;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+import java.time.format.ResolverStyle;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 /**
@@ -15,6 +22,12 @@ import java.util.Scanner;
 public class Gongrilla {
     private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final Storage STORAGE = new Storage(Path.of("data", "gongrilla.txt"));
+    private static final List<DateTimeFormatter> INPUT_DATE_TIME_FORMATS = List.of(
+            strictFormatter("d/M/uuuu HHmm"),
+            strictFormatter("uuuu-MM-dd HHmm"));
+    private static final List<DateTimeFormatter> INPUT_DATE_FORMATS = List.of(
+            strictFormatter("d/M/uuuu"),
+            DateTimeFormatter.ISO_LOCAL_DATE.withResolverStyle(ResolverStyle.STRICT));
 
     /**
      * Reads and processes commands until the user enters {@code bye}.
@@ -46,7 +59,7 @@ public class Gongrilla {
 
         Scanner scanner = new Scanner(System.in);
         while (scanner.hasNextLine()) {
-            String command = scanner.nextLine();
+            String command = scanner.nextLine().trim();
             System.out.println(HORIZONTAL_LINE);
 
             if (command.equalsIgnoreCase("bye")) {
@@ -69,17 +82,18 @@ public class Gongrilla {
                     // (?i) -> ignore case, \\s+ -> matches one or more spaces
                     if (parts.length < 2) {
                         throw new GongrillaException(
-                                "Ooo? Deadline need: <task> /by <date/time>");
+                                "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
                     }
                     if (parts[0].isBlank()) {
                         throw new GongrillaException("No task. What Gongrilla supposed to do?");
                     }
                     if (parts[1].isBlank()) {
-                        throw new GongrillaException("No date/time. Gongrilla need know when.");
+                        throw new GongrillaException("No date. Gongrilla need know when.");
                     }
                     String name = parts[0].trim();
                     String by = parts[1].trim();
-                    Deadline deadline = new Deadline(name, by);
+                    LocalDateTime byDateTime = parseDateTime(by);
+                    Deadline deadline = new Deadline(name, byDateTime);
                     STORAGE.appendAdd(deadline);
                     tasks.add(deadline);
 
@@ -90,7 +104,7 @@ public class Gongrilla {
                         || command.regionMatches(true, 0, "todo ", 0, 5)) {
                     String name = command.substring("todo".length()).trim();
                     if (name.isBlank()) {
-                        throw new GongrillaException("Empty task. What Gongrilla do? Give Gongrilla something.");
+                        throw new GongrillaException("Empty task. What Gongrilla do? Give something.");
                     }
                     Todo todo = new Todo(name);
                     STORAGE.appendAdd(todo);
@@ -106,10 +120,11 @@ public class Gongrilla {
 
                     if (parts.length < 3) {
                         throw new GongrillaException(
-                                "Ooo? Event need: <task> /from <date/time> /to <date/time>");
+                                "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+                                        + "/to D/M/YYYY [HHMM]");
                     }
                     if (parts[0].isBlank()) {
-                        throw new GongrillaException("Task missing. No Task, No Banana.");
+                        throw new GongrillaException("Task missing. No task, no banana.");
                     }
                     if (parts[1].isBlank() || parts[2].isBlank()) {
                         throw new GongrillaException(
@@ -118,8 +133,10 @@ public class Gongrilla {
                     String name = parts[0].trim();
                     String from = parts[1].trim();
                     String to = parts[2].trim();
+                    LocalDateTime fromDateTime = parseDateTime(from);
+                    LocalDateTime toDateTime = parseDateTime(to);
 
-                    Event event = new Event(name, from, to);
+                    Event event = new Event(name, fromDateTime, toDateTime);
                     STORAGE.appendAdd(event);
                     tasks.add(event);
 
@@ -171,8 +188,12 @@ public class Gongrilla {
                     throw new GongrillaException(
                             "Hmm. Gongrilla no know that :-(");
                 }
-            } catch (GongrillaException exception) {
+            } catch (GongrillaException | IllegalArgumentException exception) {
                 System.out.println(exception.getMessage());
+            } catch (DateTimeParseException exception) {
+                System.out.println(
+                        "Gongrilla cannot understand that date and time. "
+                                + "Use D/M/YYYY with optional HHMM, like 2/12/2019 1800.");
             } catch (IOException exception) {
                 System.out.println("Gongrilla cannot save that change: " + exception.getMessage());
                 System.out.println("Task list was not changed.");
@@ -196,6 +217,36 @@ public class Gongrilla {
         } catch (NumberFormatException exception) {
             return -1;
         }
+    }
+
+    /**
+     * Parses either a date or a date and time. A date without a time starts at midnight.
+     *
+     * @param value date text entered by the user
+     * @return parsed date and time
+     * @throws DateTimeParseException if none of the supported formats match
+     */
+    private static LocalDateTime parseDateTime(String value) {
+        for (DateTimeFormatter formatter : INPUT_DATE_TIME_FORMATS) {
+            try {
+                return LocalDateTime.parse(value, formatter);
+            } catch (DateTimeParseException ignored) {
+                // Try the next supported format.
+            }
+        }
+        for (DateTimeFormatter formatter : INPUT_DATE_FORMATS) {
+            try {
+                return LocalDate.parse(value, formatter).atStartOfDay();
+            } catch (DateTimeParseException ignored) {
+                // Try the next supported format.
+            }
+        }
+        throw new DateTimeParseException("Unsupported date-time format", value, 0);
+    }
+
+    private static DateTimeFormatter strictFormatter(String pattern) {
+        return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
+                .withResolverStyle(ResolverStyle.STRICT);
     }
 
 }

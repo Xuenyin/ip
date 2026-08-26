@@ -9,6 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,7 +21,10 @@ import java.util.List;
  */
 public class Storage {
     private static final String FIELD_SEPARATOR = " | ";
+    private static final DateTimeFormatter STORAGE_DATE_TIME_FORMAT =
+            DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private final Path filePath;
+
 
     /**
      * Creates storage that uses the given data file.
@@ -39,7 +46,7 @@ public class Storage {
      */
     public void appendAdd(Task task) throws IOException {
         if (task == null) {
-            throw new IllegalArgumentException("The task cannot be null.");
+            throw new IllegalArgumentException("Gongrilla need real task. Stop trolling.");
         }
         appendRecord("A" + FIELD_SEPARATOR + task.toDataString());
     }
@@ -120,7 +127,7 @@ public class Storage {
 
     private Task createTask(String[] fields) {
         if (fields.length < 3) {
-            throw new IllegalArgumentException("task record has too few fields");
+            throw new IllegalArgumentException("Task record has too few fields");
         }
         boolean encoded = fields[0].endsWith("2");
         String type = encoded ? fields[0].substring(0, 1) : fields[0];
@@ -133,12 +140,12 @@ public class Storage {
         }
         case "D" -> {
             requireFieldCount(fields, 4);
-            yield new Deadline(name, decodeIfNeeded(fields[3], encoded));
+            yield new Deadline(name, parseStoredDateTime(fields[3], encoded, "deadline"));
         }
         case "E" -> {
             requireFieldCount(fields, 5);
-            yield new Event(name, decodeIfNeeded(fields[3], encoded),
-                    decodeIfNeeded(fields[4], encoded));
+            yield new Event(name, parseStoredDateTime(fields[3], encoded, "event start"),
+                    parseStoredDateTime(fields[4], encoded, "event end"));
         }
         default -> throw new IllegalArgumentException("unknown task type '" + type + "'");
         };
@@ -188,6 +195,27 @@ public class Storage {
 
     private String decodeIfNeeded(String value, boolean encoded) {
         return encoded ? URLDecoder.decode(value, StandardCharsets.UTF_8) : value;
+    }
+
+    private LocalDateTime parseStoredDateTime(String value, boolean encoded, String fieldName) {
+        String decodedValue = decodeIfNeeded(value, encoded);
+        try {
+            return LocalDateTime.parse(decodedValue, STORAGE_DATE_TIME_FORMAT);
+        } catch (DateTimeParseException dateTimeException) {
+            try {
+                // Date-only records from the previous version are interpreted as midnight.
+                return LocalDate.parse(decodedValue, DateTimeFormatter.ISO_LOCAL_DATE)
+                        .atStartOfDay();
+            } catch (DateTimeParseException dateException) {
+                String guidance = encoded
+                        ? "expected an ISO date-time"
+                        : "legacy date must be changed to an ISO date or date-time";
+                throw new IllegalArgumentException(
+                        "invalid " + fieldName + " date-time '" + decodedValue + "'; "
+                                + guidance,
+                        dateTimeException);
+            }
+        }
     }
 
     private void requireFieldCount(String[] fields, int expected) {
