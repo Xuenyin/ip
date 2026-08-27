@@ -1,7 +1,9 @@
-import taskTypes.Deadline;
-import taskTypes.Event;
-import taskTypes.Task;
-import taskTypes.Todo;
+package gongrilla.storage;
+
+import gongrilla.task.Deadline;
+import gongrilla.task.Event;
+import gongrilla.task.Task;
+import gongrilla.task.Todo;
 
 import java.io.IOException;
 import java.net.URLDecoder;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Persists Gongrilla's tasks in an append-only journal on the local hard disk.
+ * Persists gongrilla.Gongrilla's tasks in an append-only journal on the local hard disk.
  */
 public class Storage {
     private static final String FIELD_SEPARATOR = " | ";
@@ -46,7 +48,7 @@ public class Storage {
      */
     public void appendAdd(Task task) throws IOException {
         if (task == null) {
-            throw new IllegalArgumentException("Gongrilla need real task. Stop trolling.");
+            throw new IllegalArgumentException("gongrilla.Gongrilla need real task. Stop trolling.");
         }
         appendRecord("A" + FIELD_SEPARATOR + task.toDataString());
     }

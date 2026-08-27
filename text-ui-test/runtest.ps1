@@ -15,10 +15,10 @@ if ($LASTEXITCODE -ne 0) {
     throw "Maven compilation failed."
 }
 Get-Content (Join-Path $PSScriptRoot "INPUT.TXT") |
-        java -cp $classesDirectory Gongrilla |
+        java -cp $classesDirectory gongrilla.Gongrilla |
         Set-Content $actualFile
 if ($LASTEXITCODE -ne 0) {
-    throw "Gongrilla exited with an error."
+    throw "gongrilla.Gongrilla exited with an error."
 }
 
 $expectedData = Get-Content $expectedDataFile

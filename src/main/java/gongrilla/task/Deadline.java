@@ -1,4 +1,4 @@
-package taskTypes;
+package gongrilla.task;
 
 import lombok.Getter;
 
@@ -19,7 +19,7 @@ public class Deadline extends Task {
 
     public Deadline(String name, LocalDateTime by) {
         super(name);
-        this.by = Objects.requireNonNull(by, "Where deadline? Gongrilla need.");
+        this.by = Objects.requireNonNull(by, "Where deadline? gongrilla.Gongrilla need.");
     }
 
     @Override
