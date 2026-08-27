@@ -14,13 +14,11 @@ import java.time.format.ResolverStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 
 /**
  * Runs the Gongrilla chatbot and manages the user's tasks.
  */
 public class Gongrilla {
-    private static final String HORIZONTAL_LINE = "____________________________________________________________";
     private static final Storage STORAGE = new Storage(Path.of("data", "gongrilla.txt"));
     private static final List<DateTimeFormatter> INPUT_DATE_TIME_FORMATS = List.of(
             strictFormatter("d/M/uuuu HHmm"),
@@ -31,50 +29,31 @@ public class Gongrilla {
 
     /**
      * Reads and processes commands until the user enters {@code bye}.
-     **/
+    **/
     public static void main(String[] args) {
-        String banner =
-                "  _--==--_  \n" +
-                " / _    _ \\ \n" +
-                " \\        / \n" +
-                " |  (..)  |  \n" +
-                " \\   __   / \n" +
-                "  \\______/  \n";
-
-        System.out.println(HORIZONTAL_LINE);
-        System.out.print(banner);
-        System.out.println("Ooo");
-        System.out.println("Human back. Gongrilla ready.");
-        System.out.println(HORIZONTAL_LINE);
+        Ui ui = new Ui();
+        ui.showWelcome();
 
         ArrayList<Task> tasks;
         try {
             tasks = STORAGE.load();
         } catch (IOException exception) {
-            System.out.println("Gongrilla cannot read saved tasks: " + exception.getMessage());
-            System.out.println("Fix data file, then start Gongrilla again.");
-            System.out.println(HORIZONTAL_LINE);
+            ui.showLoadingError(exception.getMessage());
             return;
         }
 
-        Scanner scanner = new Scanner(System.in);
-        while (scanner.hasNextLine()) {
-            String command = scanner.nextLine().trim();
-            System.out.println(HORIZONTAL_LINE);
+        while (ui.hasNextCommand()) {
+            String command = ui.readCommand();
+            ui.showLine();
 
             if (command.equalsIgnoreCase("bye")) {
-                System.out.println("Fine. Take banana go \uD83C\uDF4C");
-                System.out.println(HORIZONTAL_LINE);
+                ui.showGoodbye();
                 break;
             }
 
             try {
                 if (command.equalsIgnoreCase("list")) {
-                    System.out.println("Gongrilla find tasks in list:");
-                    for (int i = 0; i < tasks.size(); i++) {
-                        Task task = tasks.get(i);
-                        System.out.println("  " + (i + 1) + "." + task);
-                    }
+                    ui.showTaskList(tasks);
                 } else if (command.equalsIgnoreCase("deadline")
                         || command.regionMatches(true, 0, "deadline ", 0, 9)) {
                     String details = command.substring("deadline".length()).trim();
@@ -97,9 +76,7 @@ public class Gongrilla {
                     STORAGE.appendAdd(deadline);
                     tasks.add(deadline);
 
-                    System.out.println("Ooo. New deadline:");
-                    System.out.println("  " + deadline);
-                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
+                    ui.showAddedTask("deadline", deadline, tasks.size());
                 } else if (command.equalsIgnoreCase("todo")
                         || command.regionMatches(true, 0, "todo ", 0, 5)) {
                     String name = command.substring("todo".length()).trim();
@@ -110,9 +87,7 @@ public class Gongrilla {
                     STORAGE.appendAdd(todo);
                     tasks.add(todo);
 
-                    System.out.println("Ooo. New todo:");
-                    System.out.println("  " + todo);
-                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
+                    ui.showAddedTask("todo", todo, tasks.size());
                 } else if (command.equalsIgnoreCase("event")
                         || command.regionMatches(true, 0, "event ", 0, 6)) {
                     String details = command.substring("event".length()).trim();
@@ -140,9 +115,7 @@ public class Gongrilla {
                     STORAGE.appendAdd(event);
                     tasks.add(event);
 
-                    System.out.println("Ooo. New event:");
-                    System.out.println("  " + event);
-                    System.out.println("Gongrilla count " + tasks.size() + " tasks.");
+                    ui.showAddedTask("event", event, tasks.size());
                 } else if (command.equalsIgnoreCase("delete")
                         || command.regionMatches(true, 0, "delete ", 0, 7)) {
                     int index = parseTaskIndex(command, "delete", tasks.size());
@@ -152,9 +125,7 @@ public class Gongrilla {
                         Task removedTask = tasks.get(index);
                         STORAGE.appendDelete(index);
                         tasks.remove(index);
-                        System.out.println("Gongrilla remove task:");
-                        System.out.println("  " + removedTask);
-                        System.out.println("Now Gongrilla count " + tasks.size() + " tasks in list.");
+                        ui.showDeletedTask(removedTask, tasks.size());
                     }
                 } else if (command.equalsIgnoreCase("mark")
                         || command.regionMatches(true, 0, "mark ", 0, 5)) {
@@ -167,8 +138,7 @@ public class Gongrilla {
                             STORAGE.appendMark(index);
                             task.markDone();
                         }
-                        System.out.println("Banana! Gongrilla happy.");
-                        System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
+                        ui.showMarkedTask(task);
                     }
                 } else if (command.equalsIgnoreCase("unmark")
                         || command.regionMatches(true, 0, "unmark ", 0, 7)) {
@@ -181,24 +151,22 @@ public class Gongrilla {
                             STORAGE.appendUnmark(index);
                             task.unmarkDone();
                         }
-                        System.out.println("No Banana! Gongrilla sad.");
-                        System.out.println("  " + task.getIsDoneStatus() + " " + task.getName());
+                        ui.showUnmarkedTask(task);
                     }
                 } else {
                     throw new GongrillaException(
                             "Hmm. Gongrilla no know that :-(");
                 }
             } catch (GongrillaException | IllegalArgumentException exception) {
-                System.out.println(exception.getMessage());
+                ui.showError(exception.getMessage());
             } catch (DateTimeParseException exception) {
-                System.out.println(
+                ui.showError(
                         "Gongrilla cannot understand that date and time. "
                                 + "Use D/M/YYYY with optional HHMM, like 2/12/2019 1800.");
             } catch (IOException exception) {
-                System.out.println("Gongrilla cannot save that change: " + exception.getMessage());
-                System.out.println("Task list was not changed.");
+                ui.showSavingError(exception.getMessage());
             }
-            System.out.println(HORIZONTAL_LINE);
+            ui.showLine();
         }
     }
 
