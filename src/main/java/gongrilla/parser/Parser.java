@@ -135,7 +135,7 @@ public class Parser {
             throws GongrillaException {
         String value = command.substring(keyword.length()).trim();
         if (value.isEmpty()) {
-            throw new GongrillaException("No number. gongrilla.Gongrilla pick air?");
+            throw new GongrillaException("No number. Gongrilla pick air?");
         }
         if (value.startsWith("+")) {
             throw new GongrillaException(
@@ -154,7 +154,7 @@ public class Parser {
             }
             return taskNumber - 1;
         } catch (NumberFormatException exception) {
-            throw new GongrillaException("Number too big. gongrilla.Gongrilla run out of fingers.");
+            throw new GongrillaException("Number too big. Gongrilla run out of fingers.");
         }
     }
 
