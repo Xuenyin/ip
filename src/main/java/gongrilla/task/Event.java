@@ -1,4 +1,4 @@
-package taskTypes;
+package gongrilla.task;
 
 import lombok.Getter;
 
@@ -25,7 +25,7 @@ public class Event extends Task {
         this.to = Objects.requireNonNull(to, "Where end time? Gongrilla need.");
         if (from.isAfter(to)) {
             throw new IllegalArgumentException(
-                    "Start time must come before end time. Even banana know that.");
+                    "Start time cannot be after end time. Even banana know that.");
         }
     }
 

@@ -1,4 +1,4 @@
-package taskTypes;
+package gongrilla.task;
 
 import lombok.Getter;
 
