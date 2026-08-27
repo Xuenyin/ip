@@ -8,7 +8,7 @@ import gongrilla.ui.Ui;
 import java.io.IOException;
 
 /**
- * Represents an instruction that can be executed by Gongrilla.
+ * Represents an instruction that can be executed by gongrilla.Gongrilla.
  *
  * <p>Each subclass represents one user operation, such as adding, deleting,
  * listing, marking, or exiting.</p>
@@ -29,7 +29,7 @@ public abstract class Command {
     /**
      * Returns whether this command should stop the application.
      *
-     * @return {@code true} if Gongrilla should exit
+     * @return {@code true} if gongrilla.Gongrilla should exit
      */
     public boolean isExit() {
         return false;
