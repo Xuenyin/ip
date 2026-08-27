@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -34,9 +33,9 @@ public class Gongrilla {
         Ui ui = new Ui();
         ui.showWelcome();
 
-        ArrayList<Task> tasks;
+        TaskList tasks;
         try {
-            tasks = STORAGE.load();
+            tasks = new TaskList(STORAGE.load());
         } catch (IOException exception) {
             ui.showLoadingError(exception.getMessage());
             return;
@@ -53,7 +52,7 @@ public class Gongrilla {
 
             try {
                 if (command.equalsIgnoreCase("list")) {
-                    ui.showTaskList(tasks);
+                    ui.showTaskList(tasks.asList());
                 } else if (command.equalsIgnoreCase("deadline")
                         || command.regionMatches(true, 0, "deadline ", 0, 9)) {
                     String details = command.substring("deadline".length()).trim();
@@ -124,7 +123,7 @@ public class Gongrilla {
                     } else {
                         Task removedTask = tasks.get(index);
                         STORAGE.appendDelete(index);
-                        tasks.remove(index);
+                        tasks.delete(index);
                         ui.showDeletedTask(removedTask, tasks.size());
                     }
                 } else if (command.equalsIgnoreCase("mark")
@@ -136,7 +135,7 @@ public class Gongrilla {
                         Task task = tasks.get(index);
                         if (!task.isDone()) {
                             STORAGE.appendMark(index);
-                            task.markDone();
+                            task = tasks.mark(index);
                         }
                         ui.showMarkedTask(task);
                     }
@@ -149,7 +148,7 @@ public class Gongrilla {
                         Task task = tasks.get(index);
                         if (task.isDone()) {
                             STORAGE.appendUnmark(index);
-                            task.unmarkDone();
+                            task = tasks.unmark(index);
                         }
                         ui.showUnmarkedTask(task);
                     }
