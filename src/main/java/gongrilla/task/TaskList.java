@@ -1,4 +1,4 @@
-import taskTypes.Task;
+package gongrilla.task;
 
 import java.util.ArrayList;
 import java.util.List;

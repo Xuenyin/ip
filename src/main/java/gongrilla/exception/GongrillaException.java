@@ -1,4 +1,4 @@
-package exceptions;
+package gongrilla.exception;
 
 /**
  * Represents an error caused by a command that Gongrilla cannot process.

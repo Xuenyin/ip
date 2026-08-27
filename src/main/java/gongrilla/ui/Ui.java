@@ -1,4 +1,6 @@
-import taskTypes.Task;
+package gongrilla.ui;
+
+import gongrilla.task.Task;
 
 import java.io.InputStream;
 import java.io.PrintStream;

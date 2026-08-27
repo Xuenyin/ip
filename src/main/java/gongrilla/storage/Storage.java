@@ -1,7 +1,9 @@
-import taskTypes.Deadline;
-import taskTypes.Event;
-import taskTypes.Task;
-import taskTypes.Todo;
+package gongrilla.storage;
+
+import gongrilla.task.Deadline;
+import gongrilla.task.Event;
+import gongrilla.task.Task;
+import gongrilla.task.Todo;
 
 import java.io.IOException;
 import java.net.URLDecoder;

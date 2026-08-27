@@ -1,8 +1,7 @@
-import exceptions.GongrillaException;
-import taskTypes.Deadline;
-import taskTypes.Event;
-import taskTypes.Task;
-import taskTypes.Todo;
+import gongrilla.exception.GongrillaException;
+import gongrilla.storage.Storage;
+import gongrilla.task.*;
+import gongrilla.ui.Ui;
 
 import java.io.IOException;
 import java.nio.file.Path;
