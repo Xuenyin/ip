@@ -69,7 +69,6 @@ public class Ui {
     /** Shows the farewell message. */
     public void showGoodbye() {
         output.println("Fine. Take banana go \uD83C\uDF4C");
-        showLine();
     }
 
     /** Shows every task with its user-facing one-based number. */
