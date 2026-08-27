@@ -21,8 +21,8 @@ public class Event extends Task {
 
     public Event(String name, LocalDateTime from, LocalDateTime to) {
         super(name);
-        this.from = Objects.requireNonNull(from, "Where start time? Gongrilla need.");
-        this.to = Objects.requireNonNull(to, "Where end time? Gongrilla need.");
+        this.from = Objects.requireNonNull(from, "Where start time? gongrilla.Gongrilla need.");
+        this.to = Objects.requireNonNull(to, "Where end time? gongrilla.Gongrilla need.");
         if (from.isAfter(to)) {
             throw new IllegalArgumentException(
                     "Start time cannot be after end time. Even banana know that.");
