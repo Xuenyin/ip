@@ -5,7 +5,7 @@ import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
 
 /**
- * Ends the current gongrilla.Gongrilla session.
+ * Ends the current Gongrilla session.
  */
 public class ExitCommand extends Command {
     /**

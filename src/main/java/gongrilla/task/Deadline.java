@@ -19,7 +19,7 @@ public class Deadline extends Task {
 
     public Deadline(String name, LocalDateTime by) {
         super(name);
-        this.by = Objects.requireNonNull(by, "Where deadline? gongrilla.Gongrilla need.");
+        this.by = Objects.requireNonNull(by, "Where deadline? Gongrilla need.");
     }
 
     @Override

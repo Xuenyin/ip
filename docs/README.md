@@ -1,4 +1,4 @@
-# gongrilla.Gongrilla User Guide
+# Gongrilla User Guide
 
 // Update the title above to match the actual product name
 

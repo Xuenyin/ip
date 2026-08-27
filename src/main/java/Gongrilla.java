@@ -1,5 +1,3 @@
-package gongrilla;
-
 import gongrilla.command.Command;
 import gongrilla.exception.GongrillaException;
 import gongrilla.parser.Parser;
@@ -12,7 +10,7 @@ import java.nio.file.Path;
 import java.time.format.DateTimeParseException;
 
 /**
- * Runs the gongrilla.Gongrilla chatbot and manages the user's tasks.
+ * Runs the Gongrilla chatbot and manages the user's tasks.
  */
 public class Gongrilla {
     private static final Storage STORAGE = new Storage(Path.of("data", "gongrilla.txt"));
@@ -45,7 +43,7 @@ public class Gongrilla {
                 ui.showError(exception.getMessage());
             } catch (DateTimeParseException exception) {
                 ui.showError(
-                        "gongrilla.Gongrilla cannot understand that date and time. "
+                        "Gongrilla cannot understand that date and time. "
                                 + "Use D/M/YYYY with optional HHMM, like 2/12/2019 1800.");
             } catch (IOException exception) {
                 ui.showSavingError(exception.getMessage());

@@ -59,10 +59,10 @@ public class Parser {
                         "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
             }
             if (parts[0].isBlank()) {
-                throw new GongrillaException("No task. What gongrilla.Gongrilla supposed to do?");
+                throw new GongrillaException("No task. What Gongrilla supposed to do?");
             }
             if (parts[1].isBlank()) {
-                throw new GongrillaException("When task due? gongrilla.Gongrilla need date or date-time.");
+                throw new GongrillaException("When task due? Gongrilla need date or date-time.");
             }
             String name = parts[0].trim();
             String by = parts[1].trim();
@@ -74,7 +74,7 @@ public class Parser {
                 || command.regionMatches(true, 0, "todo ", 0, 5)) {
             String name = command.substring("todo".length()).trim();
             if (name.isBlank()) {
-                throw new GongrillaException("Empty task. What gongrilla.Gongrilla do? Give something.");
+                throw new GongrillaException("Empty task. What Gongrilla do? Give something.");
             }
             Todo todo = new Todo(name);
 
@@ -100,7 +100,7 @@ public class Parser {
             }
             if (fromAndTo[0].isBlank() || fromAndTo[1].isBlank()) {
                 throw new GongrillaException(
-                        "When event start? When event end? gongrilla.Gongrilla need know.");
+                        "When event start? When event end? Gongrilla need know.");
             }
             String name = descriptionAndTimes[0].trim();
             String from = fromAndTo[0].trim();
@@ -126,7 +126,7 @@ public class Parser {
             return new UnmarkCommand(index);
         } else {
             throw new GongrillaException(
-                    "Hmm. gongrilla.Gongrilla no know that :-(");
+                    "Hmm. Gongrilla no know that :-(");
         }
     }
 
@@ -135,7 +135,7 @@ public class Parser {
             throws GongrillaException {
         String value = command.substring(keyword.length()).trim();
         if (value.isEmpty()) {
-            throw new GongrillaException("No number. gongrilla.Gongrilla pick air?");
+            throw new GongrillaException("No number. Gongrilla pick air?");
         }
         if (value.startsWith("+")) {
             throw new GongrillaException(
@@ -154,7 +154,7 @@ public class Parser {
             }
             return taskNumber - 1;
         } catch (NumberFormatException exception) {
-            throw new GongrillaException("Number too big. gongrilla.Gongrilla run out of fingers.");
+            throw new GongrillaException("Number too big. Gongrilla run out of fingers.");
         }
     }
 

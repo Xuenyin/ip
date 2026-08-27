@@ -15,10 +15,6 @@ repositories {
 
 dependencies {
     String jUnitVersion = '5.14.4'
-    String lombokVersion = '1.18.42'
-
-    compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 
     testImplementation "org.junit.jupiter:junit-jupiter-api:${jUnitVersion}"
 
@@ -41,7 +37,7 @@ test {
 }
 
 application {
-    mainClass = 'gongrilla.Gongrilla'
+    mainClass = 'seedu.duke.Duke'
 }
 
 jar {
@@ -52,7 +48,7 @@ jar {
 }
 
 shadowJar {
-    archiveFileName = 'gongrilla.jar'
+    archiveFileName = 'duke.jar'
 }
 
 run {
