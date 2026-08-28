@@ -1,17 +1,9 @@
+package gongrilla.parser;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import gongrilla.command.Command;
-import gongrilla.command.DeleteCommand;
-import gongrilla.command.ExitCommand;
-import gongrilla.exception.GongrillaException;
-import gongrilla.parser.Parser;
-import gongrilla.storage.Storage;
-import gongrilla.task.TaskList;
-import gongrilla.task.Todo;
-import gongrilla.ui.Ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -21,6 +13,15 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
+
+import gongrilla.command.Command;
+import gongrilla.command.DeleteCommand;
+import gongrilla.command.ExitCommand;
+import gongrilla.exception.GongrillaException;
+import gongrilla.storage.Storage;
+import gongrilla.task.TaskList;
+import gongrilla.task.Todo;
+import gongrilla.ui.Ui;
 
 /**
  * Tests command parsing and execution boundaries.

@@ -20,8 +20,8 @@ public class Deadline extends Task {
     /**
      * Creates an incomplete deadline with a due date and time.
      *
-     * @param name description of the deadline
-     * @param by date and time by which the task must be completed
+     * @param name description of the deadline.
+     * @param by date and time by which the task must be completed.
      */
     public Deadline(String name, LocalDateTime by) {
         super(name);
@@ -31,7 +31,7 @@ public class Deadline extends Task {
     /**
      * Converts this deadline into one encoded storage record.
      *
-     * @return serialized deadline record
+     * @return serialized deadline record.
      */
     @Override
     public String toDataString() {
@@ -41,7 +41,7 @@ public class Deadline extends Task {
     /**
      * Returns the deadline's user-facing representation with its due time.
      *
-     * @return formatted deadline
+     * @return formatted deadline.
      */
     @Override
     public String toString() {

@@ -17,7 +17,7 @@ public class UnmarkCommand extends Command {
     /**
      * Creates a command that marks one task incomplete.
      *
-     * @param index zero-based index of the task
+     * @param index zero-based index of the task.
      */
     public UnmarkCommand(int index) {
         this.index = index;
@@ -26,23 +26,15 @@ public class UnmarkCommand extends Command {
     /**
      * Marks the task incomplete, records the change, and displays the result.
      *
-     * @param tasks task list to modify
-     * @param ui user interface used to display the unmarked task
-     * @param storage storage used to persist the state change
-     * @throws GongrillaException if the index does not identify a task
-     * @throws IOException if the state change cannot be saved
+     * @param tasks task list to modify.
+     * @param ui user interface used to display the unmarked task.
+     * @param storage storage used to persist the state change.
+     * @throws GongrillaException if the index does not identify a task.
+     * @throws IOException if the state change cannot be saved.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
-        /*
-         * TODO:
-         * 1. Validate and retrieve the task.
-         * 2. Check whether it is currently completed.
-         * 3. If necessary, record the unmark operation first.
-         * 4. Unmark it through TaskList.
-         * 5. Display the result.
-         */
         if (this.index < 0 || this.index >= tasks.size()) {
             throw new GongrillaException("No task there. Human seeing things?");
         } else {

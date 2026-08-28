@@ -4,7 +4,7 @@ import gongrilla.command.Command;
 import gongrilla.exception.GongrillaException;
 import gongrilla.parser.Parser;
 import gongrilla.storage.Storage;
-import gongrilla.task.*;
+import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
 
 import java.io.IOException;
@@ -24,7 +24,7 @@ public class Gongrilla {
     /**
      * Reads and processes commands until the user enters {@code bye}.
      *
-     * @param args command-line arguments; currently unused
+     * @param args command-line arguments; currently unused.
      */
     public static void main(String[] args) {
         Ui ui = new Ui();

@@ -21,11 +21,11 @@ public abstract class Command {
     /**
      * Executes this command using the application's main components.
      *
-     * @param tasks task list to query or modify
-     * @param ui user interface used to display results
-     * @param storage storage used to persist task-list changes
-     * @throws GongrillaException if the command cannot be completed
-     * @throws IOException if a task-list change cannot be saved
+     * @param tasks task list to query or modify.
+     * @param ui user interface used to display results.
+     * @param storage storage used to persist task-list changes.
+     * @throws GongrillaException if the command cannot be completed.
+     * @throws IOException if a task-list change cannot be saved.
      */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException;
@@ -33,7 +33,7 @@ public abstract class Command {
     /**
      * Returns whether this command should stop the application.
      *
-     * @return {@code true} if gongrilla.Gongrilla should exit
+     * @return {@code true} if gongrilla.Gongrilla should exit.
      */
     public boolean isExit() {
         return false;

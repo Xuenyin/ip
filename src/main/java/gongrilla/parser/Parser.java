@@ -39,9 +39,9 @@ public class Parser {
     /**
      * Parses one complete line of user input.
      *
-     * @param command raw command entered by the user
-     * @return command representing the requested action
-     * @throws GongrillaException if the command is missing or malformed
+     * @param command raw command entered by the user.
+     * @return command representing the requested action.
+     * @throws GongrillaException if the command is missing or malformed.
      */
     public static Command parse(String command) throws GongrillaException {
         command = command == null ? "" : command.trim();
@@ -133,10 +133,10 @@ public class Parser {
     /**
      * Converts a user-facing task number into a zero-based index.
      *
-     * @param command complete command containing the task number
-     * @param keyword command keyword that precedes the number
-     * @return zero-based task index
-     * @throws GongrillaException if the number is missing, malformed, signed, zero, or too large
+     * @param command complete command containing the task number.
+     * @param keyword command keyword that precedes the number.
+     * @return zero-based task index.
+     * @throws GongrillaException if the number is missing, malformed, signed, zero, or too large.
      */
     private static int parseTaskIndex(String command, String keyword)
             throws GongrillaException {
@@ -169,9 +169,9 @@ public class Parser {
     /**
      * Parses either a date or a date and time. A date without a time starts at midnight.
      *
-     * @param value date text entered by the user
-     * @return parsed date and time
-     * @throws DateTimeParseException if none of the supported formats match
+     * @param value date text entered by the user.
+     * @return parsed date and time.
+     * @throws DateTimeParseException if none of the supported formats match.
      */
     private static LocalDateTime parseDateTime(String value) throws GongrillaException {
         for (DateTimeFormatter formatter : INPUT_DATE_TIME_FORMATS) {
@@ -194,8 +194,8 @@ public class Parser {
     /**
      * Creates a locale-stable, strict formatter for a user-input pattern.
      *
-     * @param pattern date-time pattern accepted from user input
-     * @return strict English-language formatter
+     * @param pattern date-time pattern accepted from user input.
+     * @return strict English-language formatter.
      */
     private static DateTimeFormatter strictFormatter(String pattern) {
         return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
