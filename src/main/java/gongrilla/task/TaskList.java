@@ -23,7 +23,11 @@ public class TaskList {
         this.tasks = new ArrayList<>(tasks);
     }
 
-    /** Adds a task to the end of the list. */
+    /**
+     * Adds a task to the end of the list.
+     *
+     * @param task task to add
+     */
     public void add(Task task) {
         tasks.add(task);
     }
@@ -48,21 +52,35 @@ public class TaskList {
         return tasks.get(index);
     }
 
-    /** Marks a task complete and returns it for display. */
+    /**
+     * Marks a task complete and returns it for display.
+     *
+     * @param index zero-based task index
+     * @return task that was marked complete
+     */
     public Task mark(int index) {
         Task task = get(index);
         task.markDone();
         return task;
     }
 
-    /** Marks a task incomplete and returns it for display. */
+    /**
+     * Marks a task incomplete and returns it for display.
+     *
+     * @param index zero-based task index
+     * @return task that was marked incomplete
+     */
     public Task unmark(int index) {
         Task task = get(index);
         task.unmarkDone();
         return task;
     }
 
-    /** @return the number of tasks */
+    /**
+     * Returns the number of tasks currently stored.
+     *
+     * @return number of tasks
+     */
     public int size() {
         return tasks.size();
     }

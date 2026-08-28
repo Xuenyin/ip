@@ -17,9 +17,15 @@ import java.time.format.DateTimeParseException;
 public class Gongrilla {
     private static final Storage STORAGE = new Storage(Path.of("data", "gongrilla.txt"));
 
+    /** Creates a Gongrilla application entry point. */
+    public Gongrilla() {
+    }
+
     /**
      * Reads and processes commands until the user enters {@code bye}.
-    **/
+     *
+     * @param args command-line arguments; currently unused
+     */
     public static void main(String[] args) {
         Ui ui = new Ui();
         ui.showWelcome();

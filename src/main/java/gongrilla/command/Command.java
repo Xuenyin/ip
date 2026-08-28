@@ -14,6 +14,10 @@ import java.io.IOException;
  * listing, marking, or exiting.</p>
  */
 public abstract class Command {
+    /** Creates a command for a parser to configure and execute. */
+    protected Command() {
+    }
+
     /**
      * Executes this command using the application's main components.
      *

@@ -25,6 +25,12 @@ public class DeleteCommand extends Command {
 
     /**
      * Validates, saves, and performs the deletion.
+     *
+     * @param tasks task list to modify
+     * @param ui user interface used to display the deleted task
+     * @param storage storage used to persist the deletion
+     * @throws GongrillaException if the index does not identify a task
+     * @throws IOException if the deletion cannot be saved
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)

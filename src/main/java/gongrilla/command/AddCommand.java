@@ -28,6 +28,12 @@ public class AddCommand extends Command {
 
     /**
      * Saves and adds the task, then displays the result.
+     *
+     * @param tasks task list to modify
+     * @param ui user interface used to display the added task
+     * @param storage storage used to persist the addition
+     * @throws GongrillaException if the command cannot be completed
+     * @throws IOException if the addition cannot be saved
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)

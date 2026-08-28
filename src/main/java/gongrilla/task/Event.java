@@ -19,6 +19,14 @@ public class Event extends Task {
     @Getter
     private final LocalDateTime to;
 
+    /**
+     * Creates an incomplete event covering the supplied time range.
+     *
+     * @param name description of the event
+     * @param from event start date and time
+     * @param to event end date and time
+     * @throws IllegalArgumentException if {@code from} is after {@code to}
+     */
     public Event(String name, LocalDateTime from, LocalDateTime to) {
         super(name);
         this.from = Objects.requireNonNull(from, "Where start time? gongrilla.Gongrilla need.");
@@ -29,12 +37,22 @@ public class Event extends Task {
         }
     }
 
+    /**
+     * Converts this event into one encoded storage record.
+     *
+     * @return serialized event record
+     */
     @Override
     public String toDataString() {
         return "E2 | " + commonDataFields() + " | " + encodeField(from.toString())
                 + " | " + encodeField(to.toString());
     }
 
+    /**
+     * Returns the event's user-facing representation with its time range.
+     *
+     * @return formatted event
+     */
     @Override
     public String toString() {
         return "[E]" + super.toString() + " (from: " + from.format(DISPLAY_DATE_TIME_FORMAT)
