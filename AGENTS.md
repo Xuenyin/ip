@@ -28,6 +28,10 @@ Unless the user says otherwise, assume that you are assisting a student working 
 
 Ensure that Java 25 is used when running the application or build tasks. On macOS, use `sdk use java 25.0.3.fx-zulu` to switch to Java 25 if needed.
 
+## Java coding standard
+
+For every Java code change or review in this repository, load and follow the project-specific `seedu-java-coding-standard` skill at `.codex/skills/seedu-java-coding-standard/SKILL.md`. All production and test code must comply with that skill.
+
 ## Testing
 
 Maintain at least 50% code coverage with JUnit tests. After each code change, update or add the relevant JUnit tests as needed to keep the test suite aligned with the changed behavior and compliant with the 50% coverage target.
