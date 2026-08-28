@@ -17,6 +17,7 @@ import org.junit.jupiter.api.io.TempDir;
 import gongrilla.command.Command;
 import gongrilla.command.DeleteCommand;
 import gongrilla.command.ExitCommand;
+import gongrilla.command.FindCommand;
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.TaskList;
@@ -49,6 +50,31 @@ class ParserCommandTest {
         assertInstanceOf(DeleteCommand.class, command);
         assertEquals(List.of("first", "third"),
                 tasks.asList().stream().map(task -> task.getName()).toList());
+    }
+
+    @Test
+    void parse_findWithMixedCaseAndWhitespace_displaysMatchingTasks() throws Exception {
+        TaskList tasks = new TaskList(List.of(
+                new Todo("read book"), new Todo("write essay"), new Todo("return BOOK")));
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Ui ui = new Ui(new ByteArrayInputStream(new byte[0]), new PrintStream(output));
+
+        Command command = Parser.parse("  FIND   book  ");
+        command.execute(tasks, ui, createStorage());
+
+        assertInstanceOf(FindCommand.class, command);
+        assertEquals("Here are the matching tasks in your list:" + System.lineSeparator()
+                        + "  1.[T][ ] read book" + System.lineSeparator()
+                        + "  2.[T][ ] return BOOK" + System.lineSeparator(),
+                output.toString());
+    }
+
+    @Test
+    void parse_findWithoutKeyword_rejectsCommand() {
+        GongrillaException exception = assertThrows(GongrillaException.class,
+                () -> Parser.parse("find   "));
+
+        assertEquals("What find? Gongrilla need keyword.", exception.getMessage());
     }
 
     @Test
