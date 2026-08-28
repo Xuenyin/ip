@@ -44,4 +44,35 @@ class TaskListTest {
                 () -> tasks.asList().add(new Todo("write book")));
         assertEquals(1, tasks.size());
     }
+
+    @Test
+    void find_matchingKeyword_returnsMatchesIgnoringCaseInOriginalOrder() {
+        Todo firstMatch = new Todo("Read Book");
+        Todo nonMatch = new Todo("write essay");
+        Todo secondMatch = new Todo("return textbook");
+        TaskList tasks = new TaskList(List.of(firstMatch, nonMatch, secondMatch));
+
+        assertEquals(List.of(firstMatch, secondMatch), tasks.find("BOOK"));
+    }
+
+    @Test
+    void find_keywordWithoutMatches_returnsEmptyList() {
+        TaskList tasks = new TaskList(List.of(new Todo("read book")));
+
+        assertTrue(tasks.find("banana").isEmpty());
+    }
+
+    @Test
+    void find_nullKeyword_throwsNullPointerException() {
+        TaskList tasks = new TaskList();
+
+        assertThrows(NullPointerException.class, () -> tasks.find(null));
+    }
+
+    @Test
+    void find_blankKeyword_throwsIllegalArgumentException() {
+        TaskList tasks = new TaskList();
+
+        assertThrows(IllegalArgumentException.class, () -> tasks.find("   "));
+    }
 }

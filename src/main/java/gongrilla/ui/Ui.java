@@ -92,6 +92,18 @@ public class Ui {
     }
 
     /**
+     * Shows tasks that match a find command with result-local numbering.
+     *
+     * @param tasks matching tasks in their original list order.
+     */
+    public void showMatchingTasks(List<Task> tasks) {
+        output.println("Here are the matching tasks in your list:");
+        for (int i = 0; i < tasks.size(); i++) {
+            output.println("  " + (i + 1) + "." + tasks.get(i));
+        }
+    }
+
+    /**
      * Shows a newly added task and the updated task count.
      *
      * @param taskType user-facing name of the task type.

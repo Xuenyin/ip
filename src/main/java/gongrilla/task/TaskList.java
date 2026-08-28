@@ -2,6 +2,8 @@ package gongrilla.task;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Owns the application's tasks and provides operations that modify them.
@@ -74,6 +76,25 @@ public class TaskList {
         Task task = get(index);
         task.unmarkDone();
         return task;
+    }
+
+    /**
+     * Finds tasks whose descriptions contain a keyword, ignoring letter case.
+     *
+     * @param keyword text to find in task descriptions.
+     * @return matching tasks in their original list order.
+     * @throws NullPointerException if the keyword is {@code null}.
+     * @throws IllegalArgumentException if the keyword is blank.
+     */
+    public List<Task> find(String keyword) {
+        Objects.requireNonNull(keyword, "Search keyword cannot be null.");
+        if (keyword.isBlank()) {
+            throw new IllegalArgumentException("Search keyword cannot be blank.");
+        }
+        String normalizedKeyword = keyword.toLowerCase(Locale.ROOT);
+        return tasks.stream()
+                .filter(task -> task.getName().toLowerCase(Locale.ROOT).contains(normalizedKeyword))
+                .toList();
     }
 
     /**
