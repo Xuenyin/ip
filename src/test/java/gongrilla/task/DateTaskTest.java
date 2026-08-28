@@ -1,3 +1,5 @@
+package gongrilla.task;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -13,9 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 
 import gongrilla.storage.Storage;
-import gongrilla.task.Deadline;
-import gongrilla.task.Event;
-import gongrilla.task.Task;
 
 /**
  * Tests typed dates, display formatting, and date persistence.

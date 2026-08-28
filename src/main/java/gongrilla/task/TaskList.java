@@ -17,7 +17,7 @@ public class TaskList {
     /**
      * Creates a task list containing the supplied tasks.
      *
-     * @param tasks initial tasks
+     * @param tasks initial tasks.
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
@@ -26,7 +26,7 @@ public class TaskList {
     /**
      * Adds a task to the end of the list.
      *
-     * @param task task to add
+     * @param task task to add.
      */
     public void add(Task task) {
         tasks.add(task);
@@ -35,8 +35,8 @@ public class TaskList {
     /**
      * Removes and returns a task.
      *
-     * @param index zero-based task index
-     * @return removed task
+     * @param index zero-based task index.
+     * @return removed task.
      */
     public Task delete(int index) {
         return tasks.remove(index);
@@ -45,8 +45,8 @@ public class TaskList {
     /**
      * Returns a task without modifying it.
      *
-     * @param index zero-based task index
-     * @return task at the index
+     * @param index zero-based task index.
+     * @return task at the index.
      */
     public Task get(int index) {
         return tasks.get(index);
@@ -55,8 +55,8 @@ public class TaskList {
     /**
      * Marks a task complete and returns it for display.
      *
-     * @param index zero-based task index
-     * @return task that was marked complete
+     * @param index zero-based task index.
+     * @return task that was marked complete.
      */
     public Task mark(int index) {
         Task task = get(index);
@@ -67,8 +67,8 @@ public class TaskList {
     /**
      * Marks a task incomplete and returns it for display.
      *
-     * @param index zero-based task index
-     * @return task that was marked incomplete
+     * @param index zero-based task index.
+     * @return task that was marked incomplete.
      */
     public Task unmark(int index) {
         Task task = get(index);
@@ -79,7 +79,7 @@ public class TaskList {
     /**
      * Returns the number of tasks currently stored.
      *
-     * @return number of tasks
+     * @return number of tasks.
      */
     public int size() {
         return tasks.size();
@@ -88,7 +88,7 @@ public class TaskList {
     /**
      * Returns a read-only snapshot for displaying tasks without exposing mutations.
      *
-     * @return immutable view of the current tasks
+     * @return immutable view of the current tasks.
      */
     public List<Task> asList() {
         return List.copyOf(tasks);

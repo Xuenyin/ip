@@ -15,9 +15,9 @@ public class ExitCommand extends Command {
     /**
      * Displays the goodbye message.
      *
-     * @param tasks current task list
-     * @param ui user interface used to display the goodbye message
-     * @param storage task storage
+     * @param tasks current task list.
+     * @param ui user interface used to display the goodbye message.
+     * @param storage task storage.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
@@ -27,7 +27,7 @@ public class ExitCommand extends Command {
     /**
      * Indicates that the application should stop after this command.
      *
-     * @return always {@code true}
+     * @return always {@code true}.
      */
     @Override
     public boolean isExit() {

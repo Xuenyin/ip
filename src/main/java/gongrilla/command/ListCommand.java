@@ -15,13 +15,12 @@ public class ListCommand extends Command {
     /**
      * Displays the current task list without modifying it.
      *
-     * @param tasks task list to display
-     * @param ui user interface used to display the tasks
-     * @param storage task storage; unused because listing does not persist changes
+     * @param tasks task list to display.
+     * @param ui user interface used to display the tasks.
+     * @param storage task storage; unused because listing does not persist changes.
      */
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage) {
-        // TODO: Ask Ui to display an immutable snapshot of TaskList.
         ui.showTaskList(tasks.asList());
     }
 }

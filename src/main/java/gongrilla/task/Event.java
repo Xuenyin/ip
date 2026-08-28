@@ -22,10 +22,10 @@ public class Event extends Task {
     /**
      * Creates an incomplete event covering the supplied time range.
      *
-     * @param name description of the event
-     * @param from event start date and time
-     * @param to event end date and time
-     * @throws IllegalArgumentException if {@code from} is after {@code to}
+     * @param name description of the event.
+     * @param from event start date and time.
+     * @param to event end date and time.
+     * @throws IllegalArgumentException if {@code from} is after {@code to}.
      */
     public Event(String name, LocalDateTime from, LocalDateTime to) {
         super(name);
@@ -40,7 +40,7 @@ public class Event extends Task {
     /**
      * Converts this event into one encoded storage record.
      *
-     * @return serialized event record
+     * @return serialized event record.
      */
     @Override
     public String toDataString() {
@@ -51,7 +51,7 @@ public class Event extends Task {
     /**
      * Returns the event's user-facing representation with its time range.
      *
-     * @return formatted event
+     * @return formatted event.
      */
     @Override
     public String toString() {

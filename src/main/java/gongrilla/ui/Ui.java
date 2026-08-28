@@ -34,8 +34,8 @@ public class Ui {
     /**
      * Creates a UI using the supplied streams, which also makes the UI testable.
      *
-     * @param input source of user commands
-     * @param output destination for chatbot responses
+     * @param input source of user commands.
+     * @param output destination for chatbot responses.
      */
     public Ui(InputStream input, PrintStream output) {
         this.scanner = new Scanner(input);
@@ -54,7 +54,7 @@ public class Ui {
     /**
      * Checks whether the input stream contains another command.
      *
-     * @return whether another command is available
+     * @return whether another command is available.
      */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
@@ -63,7 +63,7 @@ public class Ui {
     /**
      * Reads the next command and removes surrounding whitespace.
      *
-     * @return the next normalized command
+     * @return the next normalized command.
      */
     public String readCommand() {
         return scanner.nextLine().trim();
@@ -82,7 +82,7 @@ public class Ui {
     /**
      * Shows every task with its user-facing one-based number.
      *
-     * @param tasks tasks to display in their current order
+     * @param tasks tasks to display in their current order.
      */
     public void showTaskList(List<Task> tasks) {
         output.println("gongrilla.Gongrilla find tasks in list:");
@@ -94,9 +94,9 @@ public class Ui {
     /**
      * Shows a newly added task and the updated task count.
      *
-     * @param taskType user-facing name of the task type
-     * @param task task that was added
-     * @param taskCount number of tasks after the addition
+     * @param taskType user-facing name of the task type.
+     * @param task task that was added.
+     * @param taskCount number of tasks after the addition.
      */
     public void showAddedTask(String taskType, Task task, int taskCount) {
         output.println("Ooo. New " + taskType + ":");
@@ -107,8 +107,8 @@ public class Ui {
     /**
      * Shows a deleted task and the updated task count.
      *
-     * @param task task that was deleted
-     * @param taskCount number of tasks after the deletion
+     * @param task task that was deleted.
+     * @param taskCount number of tasks after the deletion.
      */
     public void showDeletedTask(Task task, int taskCount) {
         output.println("gongrilla.Gongrilla remove task:");
@@ -119,7 +119,7 @@ public class Ui {
     /**
      * Shows that a task was marked complete.
      *
-     * @param task task whose state changed
+     * @param task task whose state changed.
      */
     public void showMarkedTask(Task task) {
         output.println("Banana! gongrilla.Gongrilla happy.");
@@ -129,7 +129,7 @@ public class Ui {
     /**
      * Shows that a task was marked incomplete.
      *
-     * @param task task whose state changed
+     * @param task task whose state changed.
      */
     public void showUnmarkedTask(Task task) {
         output.println("No Banana! gongrilla.Gongrilla sad.");
@@ -139,7 +139,7 @@ public class Ui {
     /**
      * Shows a user-facing error message.
      *
-     * @param message explanation of the error
+     * @param message explanation of the error.
      */
     public void showError(String message) {
         output.println(message);
@@ -148,7 +148,7 @@ public class Ui {
     /**
      * Shows an error that prevents saved tasks from loading.
      *
-     * @param message explanation supplied by the storage layer
+     * @param message explanation supplied by the storage layer.
      */
     public void showLoadingError(String message) {
         output.println("gongrilla.Gongrilla cannot read saved tasks: " + message);
@@ -159,7 +159,7 @@ public class Ui {
     /**
      * Shows a persistence error for a command whose change was not applied.
      *
-     * @param message explanation supplied by the storage layer
+     * @param message explanation supplied by the storage layer.
      */
     public void showSavingError(String message) {
         output.println("gongrilla.Gongrilla cannot save that change: " + message);

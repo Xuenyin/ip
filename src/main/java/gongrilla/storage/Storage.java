@@ -31,7 +31,7 @@ public class Storage {
     /**
      * Creates storage that uses the given data file.
      *
-     * @param filePath path of the task data file
+     * @param filePath path of the task data file.
      */
     public Storage(Path filePath) {
         if (filePath == null) {
@@ -43,8 +43,8 @@ public class Storage {
     /**
      * Records a task addition without rewriting existing records.
      *
-     * @param task task to record
-     * @throws IOException if the record cannot be appended
+     * @param task task to record.
+     * @throws IOException if the record cannot be appended.
      */
     public void appendAdd(Task task) throws IOException {
         if (task == null) {
@@ -56,8 +56,8 @@ public class Storage {
     /**
      * Records a task deletion without rewriting existing records.
      *
-     * @param index zero-based index of the task
-     * @throws IOException if the record cannot be appended
+     * @param index zero-based index of the task.
+     * @throws IOException if the record cannot be appended.
      */
     public void appendDelete(int index) throws IOException {
         appendIndexRecord("X", index);
@@ -66,8 +66,8 @@ public class Storage {
     /**
      * Records that a task was marked complete.
      *
-     * @param index zero-based index of the task
-     * @throws IOException if the record cannot be appended
+     * @param index zero-based index of the task.
+     * @throws IOException if the record cannot be appended.
      */
     public void appendMark(int index) throws IOException {
         appendIndexRecord("M", index);
@@ -76,8 +76,8 @@ public class Storage {
     /**
      * Records that a task was marked incomplete.
      *
-     * @param index zero-based index of the task
-     * @throws IOException if the record cannot be appended
+     * @param index zero-based index of the task.
+     * @throws IOException if the record cannot be appended.
      */
     public void appendUnmark(int index) throws IOException {
         appendIndexRecord("U", index);
@@ -87,8 +87,8 @@ public class Storage {
      * Loads tasks by replaying the data file from top to bottom.
      * Legacy snapshot records from the previous implementation are also accepted.
      *
-     * @return reconstructed tasks, or an empty list if the file does not exist
-     * @throws IOException if the file cannot be read or contains an invalid record
+     * @return reconstructed tasks, or an empty list if the file does not exist.
+     * @throws IOException if the file cannot be read or contains an invalid record.
      */
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
@@ -118,28 +118,28 @@ public class Storage {
     /**
      * Applies one journal or legacy snapshot record to the reconstructed task list.
      *
-     * @param line record read from the data file
-     * @param tasks task list being reconstructed
-     * @throws IllegalArgumentException if the record type or fields are invalid
+     * @param line record read from the data file.
+     * @param tasks task list being reconstructed.
+     * @throws IllegalArgumentException if the record type or fields are invalid.
      */
     private void replayRecord(String line, ArrayList<Task> tasks) {
         String[] fields = line.split(" \\| ", -1);
         switch (fields[0]) {
-        case "A" -> tasks.add(createTask(slice(fields, 1)));
-        case "X" -> tasks.remove(readIndex(fields, tasks.size()));
-        case "M" -> tasks.get(readIndex(fields, tasks.size())).markDone();
-        case "U" -> tasks.get(readIndex(fields, tasks.size())).unmarkDone();
-        case "T", "D", "E", "T2", "D2", "E2" -> tasks.add(createTask(fields));
-        default -> throw new IllegalArgumentException("unknown record type '" + fields[0] + "'");
+            case "A" -> tasks.add(createTask(slice(fields, 1)));
+            case "X" -> tasks.remove(readIndex(fields, tasks.size()));
+            case "M" -> tasks.get(readIndex(fields, tasks.size())).markDone();
+            case "U" -> tasks.get(readIndex(fields, tasks.size())).unmarkDone();
+            case "T", "D", "E", "T2", "D2", "E2" -> tasks.add(createTask(fields));
+            default -> throw new IllegalArgumentException("unknown record type '" + fields[0] + "'");
         }
     }
 
     /**
      * Recreates a task from decoded legacy fields or encoded version-two fields.
      *
-     * @param fields task type, completion state, description, and optional dates
-     * @return reconstructed task
-     * @throws IllegalArgumentException if the record is incomplete or malformed
+     * @param fields task type, completion state, description, and optional dates.
+     * @return reconstructed task.
+     * @throws IllegalArgumentException if the record is incomplete or malformed.
      */
     private Task createTask(String[] fields) {
         if (fields.length < 3) {
@@ -150,20 +150,20 @@ public class Storage {
         boolean isDone = parseCompletion(fields[1]);
         String name = decodeIfNeeded(fields[2], encoded);
         Task task = switch (type) {
-        case "T" -> {
-            requireFieldCount(fields, 3);
-            yield new Todo(name);
-        }
-        case "D" -> {
-            requireFieldCount(fields, 4);
-            yield new Deadline(name, parseStoredDateTime(fields[3], encoded, "deadline"));
-        }
-        case "E" -> {
-            requireFieldCount(fields, 5);
-            yield new Event(name, parseStoredDateTime(fields[3], encoded, "event start"),
-                    parseStoredDateTime(fields[4], encoded, "event end"));
-        }
-        default -> throw new IllegalArgumentException("unknown task type '" + type + "'");
+            case "T" -> {
+                requireFieldCount(fields, 3);
+                yield new Todo(name);
+            }
+            case "D" -> {
+                requireFieldCount(fields, 4);
+                yield new Deadline(name, parseStoredDateTime(fields[3], encoded, "deadline"));
+            }
+            case "E" -> {
+                requireFieldCount(fields, 5);
+                yield new Event(name, parseStoredDateTime(fields[3], encoded, "event start"),
+                        parseStoredDateTime(fields[4], encoded, "event end"));
+            }
+            default -> throw new IllegalArgumentException("unknown task type '" + type + "'");
         };
         if (isDone) {
             task.markDone();
@@ -174,25 +174,25 @@ public class Storage {
     /**
      * Converts the persisted completion flag into a boolean value.
      *
-     * @param value persisted flag, either {@code 0} or {@code 1}
-     * @return whether the task is complete
-     * @throws IllegalArgumentException if the flag is not supported
+     * @param value persisted flag, either {@code 0} or {@code 1}.
+     * @return whether the task is complete.
+     * @throws IllegalArgumentException if the flag is not supported.
      */
     private boolean parseCompletion(String value) {
         return switch (value) {
-        case "0" -> false;
-        case "1" -> true;
-        default -> throw new IllegalArgumentException("completion status must be 0 or 1");
+            case "0" -> false;
+            case "1" -> true;
+            default -> throw new IllegalArgumentException("completion status must be 0 or 1");
         };
     }
 
     /**
      * Validates and reads a zero-based task index from a journal operation.
      *
-     * @param fields operation type and stored index
-     * @param taskCount current number of reconstructed tasks
-     * @return valid zero-based task index
-     * @throws IllegalArgumentException if the index is malformed or out of range
+     * @param fields operation type and stored index.
+     * @param taskCount current number of reconstructed tasks.
+     * @return valid zero-based task index.
+     * @throws IllegalArgumentException if the index is malformed or out of range.
      */
     private int readIndex(String[] fields, int taskCount) {
         requireFieldCount(fields, 2);
@@ -211,10 +211,10 @@ public class Storage {
     /**
      * Appends a journal operation that targets one task index.
      *
-     * @param operation journal operation code
-     * @param index zero-based task index
-     * @throws IllegalArgumentException if the index is negative
-     * @throws IOException if the record cannot be appended
+     * @param operation journal operation code.
+     * @param index zero-based task index.
+     * @throws IllegalArgumentException if the index is negative.
+     * @throws IOException if the record cannot be appended.
      */
     private void appendIndexRecord(String operation, int index) throws IOException {
         if (index < 0) {
@@ -226,8 +226,8 @@ public class Storage {
     /**
      * Creates the parent directory when necessary and appends one journal record.
      *
-     * @param record record to append without a trailing line separator
-     * @throws IOException if the directory or data file cannot be written
+     * @param record record to append without a trailing line separator.
+     * @throws IOException if the directory or data file cannot be written.
      */
     private void appendRecord(String record) throws IOException {
         Path parent = filePath.getParent();
@@ -241,9 +241,9 @@ public class Storage {
     /**
      * Decodes a version-two field while preserving unencoded legacy text.
      *
-     * @param value stored field value
-     * @param encoded whether the record uses version-two encoding
-     * @return decoded field value
+     * @param value stored field value.
+     * @param encoded whether the record uses version-two encoding.
+     * @return decoded field value.
      */
     private String decodeIfNeeded(String value, boolean encoded) {
         return encoded ? URLDecoder.decode(value, StandardCharsets.UTF_8) : value;
@@ -252,11 +252,11 @@ public class Storage {
     /**
      * Parses a stored ISO date-time, accepting legacy date-only values as midnight.
      *
-     * @param value stored date or date-time field
-     * @param encoded whether the field must first be decoded
-     * @param fieldName field description used in validation errors
-     * @return parsed date and time
-     * @throws IllegalArgumentException if the stored value is not a supported date format
+     * @param value stored date or date-time field.
+     * @param encoded whether the field must first be decoded.
+     * @param fieldName field description used in validation errors.
+     * @return parsed date and time.
+     * @throws IllegalArgumentException if the stored value is not a supported date format.
      */
     private LocalDateTime parseStoredDateTime(String value, boolean encoded, String fieldName) {
         String decodedValue = decodeIfNeeded(value, encoded);
@@ -282,9 +282,9 @@ public class Storage {
     /**
      * Verifies that a record contains exactly the required number of fields.
      *
-     * @param fields record fields to inspect
-     * @param expected required field count
-     * @throws IllegalArgumentException if the field count differs
+     * @param fields record fields to inspect.
+     * @param expected required field count.
+     * @throws IllegalArgumentException if the field count differs.
      */
     private void requireFieldCount(String[] fields, int expected) {
         if (fields.length != expected) {
@@ -296,9 +296,9 @@ public class Storage {
     /**
      * Copies the suffix of an array beginning at the supplied index.
      *
-     * @param values source values
-     * @param start index of the first value to copy
-     * @return copied suffix
+     * @param values source values.
+     * @param start index of the first value to copy.
+     * @return copied suffix.
      */
     private String[] slice(String[] values, int start) {
         String[] result = new String[values.length - start];
