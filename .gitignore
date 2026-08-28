@@ -23,6 +23,7 @@ text-ui-test/EXPECTED-UNIX.TXT
 !.codex/skills/
 .codex/skills/*
 !.codex/skills/seedu-java-coding-standard/
+!.codex/skills/seedu-git-standard/
 
 # Runtime task data
 /data/

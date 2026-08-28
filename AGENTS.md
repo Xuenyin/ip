@@ -38,6 +38,8 @@ Maintain at least 50% code coverage with JUnit tests. After each code change, up
 
 ## Git
 
+For every proposed, reviewed, or created commit and every new branch name, load and follow the project-specific `seedu-git-standard` skill at `.codex/skills/seedu-git-standard/SKILL.md`.
+
 Use lightweight tags unless the user requests an annotated tag.
 When proposing or creating a commit message, include enough detail to explain the rationale for the change.
 Do not commit or push unless explicitly asked.
