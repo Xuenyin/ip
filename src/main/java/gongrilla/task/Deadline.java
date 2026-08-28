@@ -17,16 +17,32 @@ public class Deadline extends Task {
     @Getter
     private final LocalDateTime by;
 
+    /**
+     * Creates an incomplete deadline with a due date and time.
+     *
+     * @param name description of the deadline
+     * @param by date and time by which the task must be completed
+     */
     public Deadline(String name, LocalDateTime by) {
         super(name);
         this.by = Objects.requireNonNull(by, "Where deadline? gongrilla.Gongrilla need.");
     }
 
+    /**
+     * Converts this deadline into one encoded storage record.
+     *
+     * @return serialized deadline record
+     */
     @Override
     public String toDataString() {
         return "D2 | " + commonDataFields() + " | " + encodeField(by.toString());
     }
 
+    /**
+     * Returns the deadline's user-facing representation with its due time.
+     *
+     * @return formatted deadline
+     */
     @Override
     public String toString() {
         return "[D]" + super.toString() + " (by: "

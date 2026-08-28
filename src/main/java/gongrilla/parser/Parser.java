@@ -130,7 +130,14 @@ public class Parser {
         }
     }
 
-    /** Converts a user-facing task number into a zero-based index. */
+    /**
+     * Converts a user-facing task number into a zero-based index.
+     *
+     * @param command complete command containing the task number
+     * @param keyword command keyword that precedes the number
+     * @return zero-based task index
+     * @throws GongrillaException if the number is missing, malformed, signed, zero, or too large
+     */
     private static int parseTaskIndex(String command, String keyword)
             throws GongrillaException {
         String value = command.substring(keyword.length()).trim();
@@ -184,7 +191,12 @@ public class Parser {
         throw new DateTimeParseException("Unsupported date-time format", value, 0);
     }
 
-    /** Creates a strict formatter for a user-input pattern. */
+    /**
+     * Creates a locale-stable, strict formatter for a user-input pattern.
+     *
+     * @param pattern date-time pattern accepted from user input
+     * @return strict English-language formatter
+     */
     private static DateTimeFormatter strictFormatter(String pattern) {
         return DateTimeFormatter.ofPattern(pattern, Locale.ENGLISH)
                 .withResolverStyle(ResolverStyle.STRICT);

@@ -8,6 +8,10 @@ import gongrilla.ui.Ui;
  * Ends the current gongrilla.Gongrilla session.
  */
 public class ExitCommand extends Command {
+    /** Creates a command that ends the current application session. */
+    public ExitCommand() {
+    }
+
     /**
      * Displays the goodbye message.
      *

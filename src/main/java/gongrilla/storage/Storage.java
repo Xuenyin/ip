@@ -115,6 +115,13 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Applies one journal or legacy snapshot record to the reconstructed task list.
+     *
+     * @param line record read from the data file
+     * @param tasks task list being reconstructed
+     * @throws IllegalArgumentException if the record type or fields are invalid
+     */
     private void replayRecord(String line, ArrayList<Task> tasks) {
         String[] fields = line.split(" \\| ", -1);
         switch (fields[0]) {
@@ -127,6 +134,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Recreates a task from decoded legacy fields or encoded version-two fields.
+     *
+     * @param fields task type, completion state, description, and optional dates
+     * @return reconstructed task
+     * @throws IllegalArgumentException if the record is incomplete or malformed
+     */
     private Task createTask(String[] fields) {
         if (fields.length < 3) {
             throw new IllegalArgumentException("Task record has too few fields");
@@ -157,6 +171,13 @@ public class Storage {
         return task;
     }
 
+    /**
+     * Converts the persisted completion flag into a boolean value.
+     *
+     * @param value persisted flag, either {@code 0} or {@code 1}
+     * @return whether the task is complete
+     * @throws IllegalArgumentException if the flag is not supported
+     */
     private boolean parseCompletion(String value) {
         return switch (value) {
         case "0" -> false;
@@ -165,6 +186,14 @@ public class Storage {
         };
     }
 
+    /**
+     * Validates and reads a zero-based task index from a journal operation.
+     *
+     * @param fields operation type and stored index
+     * @param taskCount current number of reconstructed tasks
+     * @return valid zero-based task index
+     * @throws IllegalArgumentException if the index is malformed or out of range
+     */
     private int readIndex(String[] fields, int taskCount) {
         requireFieldCount(fields, 2);
         int index;
@@ -179,6 +208,14 @@ public class Storage {
         return index;
     }
 
+    /**
+     * Appends a journal operation that targets one task index.
+     *
+     * @param operation journal operation code
+     * @param index zero-based task index
+     * @throws IllegalArgumentException if the index is negative
+     * @throws IOException if the record cannot be appended
+     */
     private void appendIndexRecord(String operation, int index) throws IOException {
         if (index < 0) {
             throw new IllegalArgumentException("The task index cannot be negative.");
@@ -186,6 +223,12 @@ public class Storage {
         appendRecord(operation + FIELD_SEPARATOR + index);
     }
 
+    /**
+     * Creates the parent directory when necessary and appends one journal record.
+     *
+     * @param record record to append without a trailing line separator
+     * @throws IOException if the directory or data file cannot be written
+     */
     private void appendRecord(String record) throws IOException {
         Path parent = filePath.getParent();
         if (parent != null) {
@@ -195,10 +238,26 @@ public class Storage {
                 StandardOpenOption.CREATE, StandardOpenOption.APPEND);
     }
 
+    /**
+     * Decodes a version-two field while preserving unencoded legacy text.
+     *
+     * @param value stored field value
+     * @param encoded whether the record uses version-two encoding
+     * @return decoded field value
+     */
     private String decodeIfNeeded(String value, boolean encoded) {
         return encoded ? URLDecoder.decode(value, StandardCharsets.UTF_8) : value;
     }
 
+    /**
+     * Parses a stored ISO date-time, accepting legacy date-only values as midnight.
+     *
+     * @param value stored date or date-time field
+     * @param encoded whether the field must first be decoded
+     * @param fieldName field description used in validation errors
+     * @return parsed date and time
+     * @throws IllegalArgumentException if the stored value is not a supported date format
+     */
     private LocalDateTime parseStoredDateTime(String value, boolean encoded, String fieldName) {
         String decodedValue = decodeIfNeeded(value, encoded);
         try {
@@ -220,6 +279,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Verifies that a record contains exactly the required number of fields.
+     *
+     * @param fields record fields to inspect
+     * @param expected required field count
+     * @throws IllegalArgumentException if the field count differs
+     */
     private void requireFieldCount(String[] fields, int expected) {
         if (fields.length != expected) {
             throw new IllegalArgumentException("expected " + expected + " fields but found "
@@ -227,6 +293,13 @@ public class Storage {
         }
     }
 
+    /**
+     * Copies the suffix of an array beginning at the supplied index.
+     *
+     * @param values source values
+     * @param start index of the first value to copy
+     * @return copied suffix
+     */
     private String[] slice(String[] values, int start) {
         String[] result = new String[values.length - start];
         System.arraycopy(values, start, result, 0, result.length);

@@ -42,14 +42,21 @@ public class Task {
         this.completionStatus = CompletionStatus.NOT_DONE;
     }
 
+    /**
+     * Returns the marker used to display the task's completion state.
+     *
+     * @return {@code [X]} when complete, or {@code [ ]} otherwise
+     */
     public String getIsDoneStatus() {
         return completionStatus.getMarker();
     }
 
+    /** Marks this task as completed. */
     public void markDone() {
         this.completionStatus = CompletionStatus.DONE;
     }
 
+    /** Marks this task as incomplete. */
     public void unmarkDone() {
         this.completionStatus = CompletionStatus.NOT_DONE;
     }
@@ -92,6 +99,11 @@ public class Task {
         return "T2 | " + commonDataFields();
     }
 
+    /**
+     * Returns the task's display form, including its completion marker.
+     *
+     * @return user-facing task description
+     */
     @Override
     public String toString() {
         return getIsDoneStatus() + " " + this.name;

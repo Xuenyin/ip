@@ -51,12 +51,20 @@ public class Ui {
         showLine();
     }
 
-    /** @return whether another command is available */
+    /**
+     * Checks whether the input stream contains another command.
+     *
+     * @return whether another command is available
+     */
     public boolean hasNextCommand() {
         return scanner.hasNextLine();
     }
 
-    /** @return the next command without surrounding whitespace */
+    /**
+     * Reads the next command and removes surrounding whitespace.
+     *
+     * @return the next normalized command
+     */
     public String readCommand() {
         return scanner.nextLine().trim();
     }
@@ -71,7 +79,11 @@ public class Ui {
         output.println("Fine. Take banana go \uD83C\uDF4C");
     }
 
-    /** Shows every task with its user-facing one-based number. */
+    /**
+     * Shows every task with its user-facing one-based number.
+     *
+     * @param tasks tasks to display in their current order
+     */
     public void showTaskList(List<Task> tasks) {
         output.println("gongrilla.Gongrilla find tasks in list:");
         for (int i = 0; i < tasks.size(); i++) {
@@ -79,45 +91,76 @@ public class Ui {
         }
     }
 
-    /** Shows a newly added task and the updated task count. */
+    /**
+     * Shows a newly added task and the updated task count.
+     *
+     * @param taskType user-facing name of the task type
+     * @param task task that was added
+     * @param taskCount number of tasks after the addition
+     */
     public void showAddedTask(String taskType, Task task, int taskCount) {
         output.println("Ooo. New " + taskType + ":");
         output.println("  " + task);
         output.println("gongrilla.Gongrilla count " + taskCount + " tasks.");
     }
 
-    /** Shows a deleted task and the updated task count. */
+    /**
+     * Shows a deleted task and the updated task count.
+     *
+     * @param task task that was deleted
+     * @param taskCount number of tasks after the deletion
+     */
     public void showDeletedTask(Task task, int taskCount) {
         output.println("gongrilla.Gongrilla remove task:");
         output.println("  " + task);
         output.println("Now gongrilla.Gongrilla count " + taskCount + " tasks in list.");
     }
 
-    /** Shows that a task was marked complete. */
+    /**
+     * Shows that a task was marked complete.
+     *
+     * @param task task whose state changed
+     */
     public void showMarkedTask(Task task) {
         output.println("Banana! gongrilla.Gongrilla happy.");
         output.println("  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
-    /** Shows that a task was marked incomplete. */
+    /**
+     * Shows that a task was marked incomplete.
+     *
+     * @param task task whose state changed
+     */
     public void showUnmarkedTask(Task task) {
         output.println("No Banana! gongrilla.Gongrilla sad.");
         output.println("  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
-    /** Shows a user-facing error message. */
+    /**
+     * Shows a user-facing error message.
+     *
+     * @param message explanation of the error
+     */
     public void showError(String message) {
         output.println(message);
     }
 
-    /** Shows an error that prevents saved tasks from loading. */
+    /**
+     * Shows an error that prevents saved tasks from loading.
+     *
+     * @param message explanation supplied by the storage layer
+     */
     public void showLoadingError(String message) {
         output.println("gongrilla.Gongrilla cannot read saved tasks: " + message);
         output.println("Fix data file, then start gongrilla.Gongrilla again.");
         showLine();
     }
 
-    /** Shows a persistence error for a command whose change was not applied. */
+    /**
+     * Shows a persistence error for a command whose change was not applied.
+     *
+     * @param message explanation supplied by the storage layer
+     */
     public void showSavingError(String message) {
         output.println("gongrilla.Gongrilla cannot save that change: " + message);
         output.println("Task list was not changed.");
