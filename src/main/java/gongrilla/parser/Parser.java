@@ -4,6 +4,7 @@ import gongrilla.command.AddCommand;
 import gongrilla.command.Command;
 import gongrilla.command.DeleteCommand;
 import gongrilla.command.ExitCommand;
+import gongrilla.command.FindCommand;
 import gongrilla.command.ListCommand;
 import gongrilla.command.MarkCommand;
 import gongrilla.command.UnmarkCommand;
@@ -47,8 +48,15 @@ public class Parser {
         command = command == null ? "" : command.trim();
         if (command.equalsIgnoreCase("bye")) {
             return new ExitCommand();
-        } else if (command.equalsIgnoreCase("list")) {// listCommand needs to be executed
+        } else if (command.equalsIgnoreCase("list")) {
             return new ListCommand();
+        } else if (command.equalsIgnoreCase("find")
+                || command.regionMatches(true, 0, "find ", 0, 5)) {
+            String keyword = command.substring("find".length()).trim();
+            if (keyword.isBlank()) {
+                throw new GongrillaException("What find? Gongrilla need keyword.");
+            }
+            return new FindCommand(keyword);
         } else if (command.equalsIgnoreCase("deadline")
                 || command.regionMatches(true, 0, "deadline ", 0, 9)) {
             String details = command.substring("deadline".length()).trim();
@@ -59,10 +67,10 @@ public class Parser {
                         "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
             }
             if (parts[0].isBlank()) {
-                throw new GongrillaException("No task. What gongrilla.Gongrilla supposed to do?");
+                throw new GongrillaException("No task. What Gongrilla supposed to do?");
             }
             if (parts[1].isBlank()) {
-                throw new GongrillaException("When task due? gongrilla.Gongrilla need date or date-time.");
+                throw new GongrillaException("When task due? Gongrilla need date or date-time.");
             }
             String name = parts[0].trim();
             String by = parts[1].trim();
@@ -74,7 +82,7 @@ public class Parser {
                 || command.regionMatches(true, 0, "todo ", 0, 5)) {
             String name = command.substring("todo".length()).trim();
             if (name.isBlank()) {
-                throw new GongrillaException("Empty task. What gongrilla.Gongrilla do? Give something.");
+                throw new GongrillaException("Empty task. What Gongrilla do? Give something.");
             }
             Todo todo = new Todo(name);
 
@@ -100,7 +108,7 @@ public class Parser {
             }
             if (fromAndTo[0].isBlank() || fromAndTo[1].isBlank()) {
                 throw new GongrillaException(
-                        "When event start? When event end? gongrilla.Gongrilla need know.");
+                        "When event start? When event end? Gongrilla need know.");
             }
             String name = descriptionAndTimes[0].trim();
             String from = fromAndTo[0].trim();
@@ -126,7 +134,7 @@ public class Parser {
             return new UnmarkCommand(index);
         } else {
             throw new GongrillaException(
-                    "Hmm. gongrilla.Gongrilla no know that :-(");
+                    "Hmm. Gongrilla no know that :-(");
         }
     }
 

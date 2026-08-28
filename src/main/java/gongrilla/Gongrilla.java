@@ -51,7 +51,7 @@ public class Gongrilla {
                 ui.showError(exception.getMessage());
             } catch (DateTimeParseException exception) {
                 ui.showError(
-                        "gongrilla.Gongrilla cannot understand that date and time. "
+                        "Gongrilla cannot understand that date and time. "
                                 + "Use D/M/YYYY with optional HHMM, like 2/12/2019 1800.");
             } catch (IOException exception) {
                 ui.showSavingError(exception.getMessage());
