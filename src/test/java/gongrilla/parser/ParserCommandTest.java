@@ -71,32 +71,32 @@ class ParserCommandTest {
 
     @Test
     void parse_findWithoutKeyword_rejectsCommand() {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse("find   "));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse("find   "));
 
         assertEquals("What find? Gongrilla need keyword.", exception.getMessage());
     }
 
     @Test
     void parse_taskNumberContainingOtherText_rejectsCommand() {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse("delete abc2"));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse("delete abc2"));
 
         assertEquals("Dis not number. Even banana know number.", exception.getMessage());
     }
 
     @Test
     void parse_zeroTaskNumber_rejectsCommand() {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse("mark 0"));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse("mark 0"));
 
         assertEquals("Task 0? Human counting start at 1. ", exception.getMessage());
     }
 
     @Test
     void parse_taskNumberWithPlusSign_rejectsCommand() {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse("mark +2"));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse("mark +2"));
 
         assertEquals("Don't put +. Number already positive. Human make simple thing hard.",
                 exception.getMessage());
@@ -104,9 +104,8 @@ class ParserCommandTest {
 
     @Test
     void parse_eventWithToBeforeFrom_rejectsCommand() {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse(
-                        "event meeting /to 3/12/2019 1700 /from 3/12/2019 0900"));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse("event meeting /to 3/12/2019 1700 /from 3/12/2019 0900"));
 
         assertEquals("Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
                         + "/to D/M/YYYY [HHMM]",
@@ -118,8 +117,8 @@ class ParserCommandTest {
         Command command = Parser.parse("delete 2");
         TaskList tasks = new TaskList(List.of(new Todo("only task")));
 
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> command.execute(tasks, createUi(), createStorage()));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                command.execute(tasks, createUi(), createStorage()));
 
         assertEquals("No task there. Human seeing things?",
                 exception.getMessage());
@@ -142,8 +141,8 @@ class ParserCommandTest {
     }
 
     private void assertParsingError(String command, String expectedMessage) {
-        GongrillaException exception = assertThrows(GongrillaException.class,
-                () -> Parser.parse(command));
+        GongrillaException exception = assertThrows(GongrillaException.class, () ->
+                Parser.parse(command));
         assertEquals(expectedMessage, exception.getMessage());
     }
 

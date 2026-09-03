@@ -1,11 +1,11 @@
 package gongrilla.command;
 
+import java.io.IOException;
+
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
-
-import java.io.IOException;
 
 /**
  * Represents an instruction that can be executed by gongrilla.Gongrilla.

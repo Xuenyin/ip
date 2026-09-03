@@ -56,8 +56,8 @@ class DateTaskTest {
 
     @Test
     void event_endBeforeStart_isRejected() {
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class,
-                () -> new Event("conference", LocalDateTime.of(2019, 12, 5, 18, 0),
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                new Event("conference", LocalDateTime.of(2019, 12, 5, 18, 0),
                         LocalDateTime.of(2019, 12, 5, 9, 0)));
 
         assertTrue(exception.getMessage().contains("cannot be after"));
@@ -66,10 +66,10 @@ class DateTaskTest {
     @Test
     void dateTasks_nullDates_areRejectedImmediately() {
         assertThrows(NullPointerException.class, () -> new Deadline("return book", null));
-        assertThrows(NullPointerException.class,
-                () -> new Event("event", null, LocalDateTime.now()));
-        assertThrows(NullPointerException.class,
-                () -> new Event("event", LocalDateTime.now(), null));
+        assertThrows(NullPointerException.class, () ->
+                new Event("event", null, LocalDateTime.now()));
+        assertThrows(NullPointerException.class, () ->
+                new Event("event", LocalDateTime.now(), null));
     }
 
     @Test
@@ -125,8 +125,8 @@ class DateTaskTest {
         Path dataFile = temporaryDirectory.resolve("legacy-informal.txt");
         Files.writeString(dataFile, "D | 0 | return book | June 6th");
 
-        IOException exception = assertThrows(IOException.class,
-                () -> new Storage(dataFile).load());
+        IOException exception = assertThrows(IOException.class, () ->
+                new Storage(dataFile).load());
 
         assertTrue(exception.getMessage().contains("line 1"));
         assertTrue(exception.getMessage().contains("must be changed to an ISO date or date-time"));
@@ -137,8 +137,8 @@ class DateTaskTest {
         Path dataFile = temporaryDirectory.resolve("reversed-event.txt");
         Files.writeString(dataFile, "E2 | 0 | conference | 2019-12-05 | 2019-12-03");
 
-        IOException exception = assertThrows(IOException.class,
-                () -> new Storage(dataFile).load());
+        IOException exception = assertThrows(IOException.class, () ->
+                new Storage(dataFile).load());
 
         assertTrue(exception.getMessage().contains("line 1"));
         assertTrue(exception.getMessage().contains("cannot be after"));

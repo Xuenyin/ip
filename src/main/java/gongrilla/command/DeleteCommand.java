@@ -1,12 +1,12 @@
 package gongrilla.command;
 
+import java.io.IOException;
+
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.Task;
 import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
-
-import java.io.IOException;
 
 /**
  * Deletes one task identified by its zero-based index.

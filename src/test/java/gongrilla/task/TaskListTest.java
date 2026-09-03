@@ -40,8 +40,8 @@ class TaskListTest {
     void asList_returnedListCannotModifyTaskList() {
         TaskList tasks = new TaskList(List.of(new Todo("read book")));
 
-        assertThrows(UnsupportedOperationException.class,
-                () -> tasks.asList().add(new Todo("write book")));
+        assertThrows(UnsupportedOperationException.class, () ->
+                tasks.asList().add(new Todo("write book")));
         assertEquals(1, tasks.size());
     }
 

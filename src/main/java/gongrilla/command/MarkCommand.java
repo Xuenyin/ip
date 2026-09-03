@@ -1,12 +1,12 @@
 package gongrilla.command;
 
+import java.io.IOException;
+
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.Task;
 import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
-
-import java.io.IOException;
 
 /**
  * Marks one task as completed.

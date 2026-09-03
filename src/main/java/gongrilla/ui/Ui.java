@@ -1,11 +1,11 @@
 package gongrilla.ui;
 
-import gongrilla.task.Task;
-
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+
+import gongrilla.task.Task;
 
 /**
  * Handles all console input and output for gongrilla.Gongrilla.

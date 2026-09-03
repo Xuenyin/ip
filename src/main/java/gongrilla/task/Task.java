@@ -1,10 +1,10 @@
 package gongrilla.task;
 
-import lombok.Getter;
-
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+
+import lombok.Getter;
 
 /**
  * Represents the shared description and completion state of a task.

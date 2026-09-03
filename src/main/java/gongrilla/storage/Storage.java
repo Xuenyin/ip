@@ -1,10 +1,5 @@
 package gongrilla.storage;
 
-import gongrilla.task.Deadline;
-import gongrilla.task.Event;
-import gongrilla.task.Task;
-import gongrilla.task.Todo;
-
 import java.io.IOException;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
@@ -17,6 +12,11 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+
+import gongrilla.task.Deadline;
+import gongrilla.task.Event;
+import gongrilla.task.Task;
+import gongrilla.task.Todo;
 
 /**
  * Persists gongrilla.Gongrilla's tasks in an append-only journal on the local hard disk.

@@ -22,8 +22,8 @@ class TaskTest {
 
     @Test
     void constructor_nullDescription_throwsNullPointerException() {
-        NullPointerException exception = assertThrows(NullPointerException.class,
-                () -> new Task(null));
+        NullPointerException exception = assertThrows(NullPointerException.class, () ->
+                new Task(null));
 
         assertEquals("Task description cannot be null.", exception.getMessage());
     }

@@ -1,11 +1,11 @@
 package gongrilla.task;
 
-import lombok.Getter;
-
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
 import java.util.Objects;
+
+import lombok.Getter;
 
 /**
  * Represents a task occurring between a start and end time.
