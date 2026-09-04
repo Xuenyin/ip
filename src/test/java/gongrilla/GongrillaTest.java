@@ -28,7 +28,7 @@ class GongrillaTest {
 
         String response = gongrilla.getResponse("unknown command");
 
-        assertTrue(response.contains("not know"));
+        assertTrue(response.contains("no know"));
         assertEquals("Error", gongrilla.getCommandType());
     }
 }

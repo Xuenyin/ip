@@ -37,6 +37,15 @@ public class MainWindow {
      */
     public void setGongrilla(Gongrilla gongrilla) {
         this.gongrilla = gongrilla;
+        String welcome =
+                  "  _--==--_  \n"
+                + " / _    _ \\ \n"
+                + " \\        / \n"
+                + " |  (..)  |  \n"
+                + " \\   __   / \n"
+                + "  \\______/  \n"
+                + "sup";
+        dialogContainer.getChildren().add(DialogBox.getGongrillaDialog(welcome, gongrillaImage, "Welcome"));
     }
 
     /** Displays the user's command and Gongrilla's response. */
