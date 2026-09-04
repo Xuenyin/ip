@@ -48,7 +48,7 @@ public class Storage {
      */
     public void appendAdd(Task task) throws IOException {
         if (task == null) {
-            throw new IllegalArgumentException("gongrilla.Gongrilla need real task. Stop trolling.");
+            throw new IllegalArgumentException("Gongrilla need real task. Stop trolling.");
         }
         appendRecord("A" + FIELD_SEPARATOR + task.toDataString());
     }
