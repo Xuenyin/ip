@@ -14,13 +14,38 @@ import org.junit.jupiter.api.Test;
  */
 class TaskListTest {
     @Test
+    void constructor_varargsArray_isCopiedInOrder() {
+        Task first = new Todo("first");
+        Task second = new Todo("second");
+        Task[] initialTasks = {first, second};
+        TaskList tasks = new TaskList(initialTasks);
+
+        initialTasks[0] = new Todo("replacement");
+
+        assertEquals(List.of(first, second), tasks.asList());
+    }
+
+    @Test
+    void addAll_emptyAndMultipleArguments_preservesExistingTasksAndOrder() {
+        Task first = new Todo("first");
+        Task second = new Todo("second");
+        Task third = new Todo("third");
+        TaskList tasks = new TaskList(first);
+
+        tasks.addAll();
+        assertEquals(List.of(first), tasks.asList());
+        tasks.addAll(second, third);
+
+        assertEquals(List.of(first, second, third), tasks.asList());
+    }
+
+    @Test
     void addAndDelete_tasks_updatesListAndReturnsDeletedTask() {
         TaskList tasks = new TaskList();
         Todo first = new Todo("first");
         Todo second = new Todo("second");
 
-        tasks.add(first);
-        tasks.add(second);
+        tasks.addAll(first, second);
         Task deleted = tasks.delete(0);
 
         assertEquals(first, deleted);
@@ -30,7 +55,7 @@ class TaskListTest {
 
     @Test
     void markAndUnmark_task_updatesCompletionState() {
-        TaskList tasks = new TaskList(List.of(new Todo("read book")));
+        TaskList tasks = new TaskList(new Todo("read book"));
 
         assertTrue(tasks.mark(0).isDone());
         assertFalse(tasks.unmark(0).isDone());
@@ -38,7 +63,7 @@ class TaskListTest {
 
     @Test
     void asList_returnedListCannotModifyTaskList() {
-        TaskList tasks = new TaskList(List.of(new Todo("read book")));
+        TaskList tasks = new TaskList(new Todo("read book"));
 
         assertThrows(UnsupportedOperationException.class, () ->
                 tasks.asList().add(new Todo("write book")));
@@ -50,14 +75,14 @@ class TaskListTest {
         Todo firstMatch = new Todo("Read Book");
         Todo nonMatch = new Todo("write essay");
         Todo secondMatch = new Todo("return textbook");
-        TaskList tasks = new TaskList(List.of(firstMatch, nonMatch, secondMatch));
+        TaskList tasks = new TaskList(firstMatch, nonMatch, secondMatch);
 
         assertEquals(List.of(firstMatch, secondMatch), tasks.find("BOOK"));
     }
 
     @Test
     void find_keywordWithoutMatches_returnsEmptyList() {
-        TaskList tasks = new TaskList(List.of(new Todo("read book")));
+        TaskList tasks = new TaskList(new Todo("read book"));
 
         assertTrue(tasks.find("banana").isEmpty());
     }

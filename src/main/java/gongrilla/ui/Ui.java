@@ -46,8 +46,9 @@ public class Ui {
     public void showWelcome() {
         showLine();
         output.print(BANNER);
-        output.println("Ooo");
-        output.println("Human back. Gongrilla ready.");
+        printLines(
+                "Ooo",
+                "Human back. Gongrilla ready.");
         showLine();
     }
 
@@ -72,6 +73,13 @@ public class Ui {
     /** Shows the standard divider between interactions. */
     public void showLine() {
         output.println(HORIZONTAL_LINE);
+    }
+
+    /** Prints each supplied line in order using the configured output stream. */
+    private void printLines(String... lines) {
+        for (String line : lines) {
+            output.println(line);
+        }
     }
 
     /** Shows the farewell message. */
@@ -111,9 +119,10 @@ public class Ui {
      * @param taskCount number of tasks after the addition.
      */
     public void showAddedTask(String taskType, Task task, int taskCount) {
-        output.println("Ooo. New " + taskType + ":");
-        output.println("  " + task);
-        output.println("Gongrilla count " + taskCount + " tasks.");
+        printLines(
+                "Ooo. New " + taskType + ":",
+                "  " + task,
+                "Gongrilla count " + taskCount + " tasks.");
     }
 
     /**
@@ -123,9 +132,10 @@ public class Ui {
      * @param taskCount number of tasks after the deletion.
      */
     public void showDeletedTask(Task task, int taskCount) {
-        output.println("Gongrilla remove task:");
-        output.println("  " + task);
-        output.println("Now Gongrilla count " + taskCount + " tasks in list.");
+        printLines(
+                "Gongrilla remove task:",
+                "  " + task,
+                "Now Gongrilla count " + taskCount + " tasks in list.");
     }
 
     /**
@@ -134,8 +144,9 @@ public class Ui {
      * @param task task whose state changed.
      */
     public void showMarkedTask(Task task) {
-        output.println("Banana! Gongrilla happy.");
-        output.println("  " + task.getIsDoneStatus() + " " + task.getName());
+        printLines(
+                "Banana! Gongrilla happy.",
+                "  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
     /**
@@ -144,8 +155,9 @@ public class Ui {
      * @param task task whose state changed.
      */
     public void showUnmarkedTask(Task task) {
-        output.println("No Banana! Gongrilla sad.");
-        output.println("  " + task.getIsDoneStatus() + " " + task.getName());
+        printLines(
+                "No Banana! Gongrilla sad.",
+                "  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
     /**
@@ -163,8 +175,9 @@ public class Ui {
      * @param message explanation supplied by the storage layer.
      */
     public void showLoadingError(String message) {
-        output.println("Gongrilla cannot read saved tasks: " + message);
-        output.println("Fix data file, then start gongrilla.Gongrilla again.");
+        printLines(
+                "Gongrilla cannot read saved tasks: " + message,
+                "Fix data file, then start gongrilla.Gongrilla again.");
         showLine();
     }
 
@@ -174,7 +187,8 @@ public class Ui {
      * @param message explanation supplied by the storage layer.
      */
     public void showSavingError(String message) {
-        output.println("Gongrilla cannot save that change: " + message);
-        output.println("Task list was not changed.");
+        printLines(
+                "Gongrilla cannot save that change: " + message,
+                "Task list was not changed.");
     }
 }

@@ -11,11 +11,6 @@ import java.util.Objects;
 public class TaskList {
     private final ArrayList<Task> tasks;
 
-    /** Creates an empty task list. */
-    public TaskList() {
-        this(List.of());
-    }
-
     /**
      * Creates a task list containing the supplied tasks.
      *
@@ -23,6 +18,24 @@ public class TaskList {
      */
     public TaskList(List<Task> tasks) {
         this.tasks = new ArrayList<>(tasks);
+    }
+
+    /**
+     * Creates a task list containing the supplied tasks in order.
+     *
+     * @param tasks initial tasks.
+     */
+    public TaskList(Task... tasks) {
+        this(List.of(tasks));
+    }
+
+    /**
+     * Adds the supplied tasks to the end of the list in order.
+     *
+     * @param tasks tasks to add.
+     */
+    public void addAll(Task... tasks) {
+        this.tasks.addAll(List.of(tasks));
     }
 
     /**

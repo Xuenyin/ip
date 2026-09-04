@@ -41,8 +41,8 @@ class ParserCommandTest {
 
     @Test
     void parse_deleteTwo_deletesSecondTask() throws Exception {
-        TaskList tasks = new TaskList(List.of(
-                new Todo("first"), new Todo("second"), new Todo("third")));
+        TaskList tasks = new TaskList(
+                new Todo("first"), new Todo("second"), new Todo("third"));
         Command command = Parser.parse("delete 2");
 
         command.execute(tasks, createUi(), createStorage());
@@ -54,8 +54,8 @@ class ParserCommandTest {
 
     @Test
     void parse_findWithMixedCaseAndWhitespace_displaysMatchingTasks() throws Exception {
-        TaskList tasks = new TaskList(List.of(
-                new Todo("read book"), new Todo("write essay"), new Todo("return BOOK")));
+        TaskList tasks = new TaskList(
+                new Todo("read book"), new Todo("write essay"), new Todo("return BOOK"));
         ByteArrayOutputStream output = new ByteArrayOutputStream();
         Ui ui = new Ui(new ByteArrayInputStream(new byte[0]), new PrintStream(output));
 
@@ -115,7 +115,7 @@ class ParserCommandTest {
     @Test
     void delete_indexBeyondTaskList_reportsExistingError() throws Exception {
         Command command = Parser.parse("delete 2");
-        TaskList tasks = new TaskList(List.of(new Todo("only task")));
+        TaskList tasks = new TaskList(new Todo("only task"));
 
         GongrillaException exception = assertThrows(GongrillaException.class, () ->
                 command.execute(tasks, createUi(), createStorage()));
