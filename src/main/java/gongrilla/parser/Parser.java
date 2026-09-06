@@ -19,6 +19,7 @@ import gongrilla.command.UnmarkCommand;
 import gongrilla.exception.GongrillaException;
 import gongrilla.task.Deadline;
 import gongrilla.task.Event;
+import gongrilla.task.TaskType;
 import gongrilla.task.Todo;
 
 /**
@@ -73,11 +74,11 @@ public class Parser {
                 throw new GongrillaException("When task due? Gongrilla need date or date-time.");
             }
             String name = parts[0].trim();
-            String by = parts[1].trim();
-            LocalDateTime byDateTime = parseDateTime(by);
+            String dueDateInput = parts[1].trim();
+            LocalDateTime byDateTime = parseDateTime(dueDateInput);
             Deadline deadline = new Deadline(name, byDateTime);
 
-            return new AddCommand(deadline, "D");
+            return new AddCommand(deadline, TaskType.DEADLINE);
         } else if (command.equalsIgnoreCase("todo")
                 || command.regionMatches(true, 0, "todo ", 0, 5)) {
             String name = command.substring("todo".length()).trim();
@@ -86,7 +87,7 @@ public class Parser {
             }
             Todo todo = new Todo(name);
 
-            return new AddCommand(todo, "T");
+            return new AddCommand(todo, TaskType.TODO);
         } else if (command.equalsIgnoreCase("event")
                 || command.regionMatches(true, 0, "event ", 0, 6)) {
             String details = command.substring("event".length()).trim();
@@ -111,14 +112,14 @@ public class Parser {
                         "When event start? When event end? Gongrilla need know.");
             }
             String name = descriptionAndTimes[0].trim();
-            String from = fromAndTo[0].trim();
-            String to = fromAndTo[1].trim();
-            LocalDateTime fromDateTime = parseDateTime(from);
-            LocalDateTime toDateTime = parseDateTime(to);
+            String startTimeInput = fromAndTo[0].trim();
+            String endTimeInput = fromAndTo[1].trim();
+            LocalDateTime fromDateTime = parseDateTime(startTimeInput);
+            LocalDateTime toDateTime = parseDateTime(endTimeInput);
 
             Event event = new Event(name, fromDateTime, toDateTime);
 
-            return new AddCommand(event, "E");
+            return new AddCommand(event, TaskType.EVENT);
         } else if (command.equalsIgnoreCase("delete")
                 || command.regionMatches(true, 0, "delete ", 0, 7)) {
             int index = parseTaskIndex(command, "delete");

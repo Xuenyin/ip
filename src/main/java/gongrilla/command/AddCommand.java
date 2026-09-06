@@ -6,6 +6,7 @@ import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.Task;
 import gongrilla.task.TaskList;
+import gongrilla.task.TaskType;
 import gongrilla.ui.Ui;
 
 /**
@@ -13,15 +14,15 @@ import gongrilla.ui.Ui;
  */
 public class AddCommand extends Command {
     private final Task task;
-    private final String taskType;
+    private final TaskType taskType;
 
     /**
      * Creates a command that adds the supplied task.
      *
      * @param task task that should be added.
-     * @param taskType user-facing type name, such as {@code todo}.
+     * @param taskType type of the supplied task, used in the confirmation message.
      */
-    public AddCommand(Task task, String taskType) {
+    public AddCommand(Task task, TaskType taskType) {
         this.task = task;
         this.taskType = taskType;
     }
@@ -39,10 +40,9 @@ public class AddCommand extends Command {
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
         String taskTypeName = switch (taskType) {
-            case "T" -> "todo";
-            case "D" -> "deadline";
-            case "E" -> "event";
-            default -> throw new IllegalArgumentException("Unknown task type: " + taskType);
+            case TODO -> "todo";
+            case DEADLINE -> "deadline";
+            case EVENT -> "event";
         };
 
         storage.appendAdd(task);

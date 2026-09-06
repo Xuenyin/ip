@@ -9,7 +9,7 @@ import java.util.Objects;
  * Owns the application's tasks and provides operations that modify them.
  */
 public class TaskList {
-    private final ArrayList<Task> tasks;
+    private final List<Task> tasks;
 
     /**
      * Creates a task list containing the supplied tasks.

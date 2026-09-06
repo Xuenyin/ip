@@ -32,6 +32,29 @@ class ParserCommandTest {
     Path temporaryDirectory;
 
     @Test
+    void parse_supportedTaskTypes_addsAndPersistsTasksWithCorrectLabels() throws Exception {
+        String[] commands = {
+            "todo read book",
+            "deadline submit report /by 6/9/2026 1700",
+            "event meeting /from 6/9/2026 0900 /to 6/9/2026 1000"
+        };
+        String[] typeNames = {"todo", "deadline", "event"};
+        TaskList tasks = new TaskList();
+        Storage storage = createStorage();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Ui ui = new Ui(new ByteArrayInputStream(new byte[0]), new PrintStream(output));
+
+        for (int i = 0; i < commands.length; i++) {
+            output.reset();
+            Parser.parse(commands[i]).execute(tasks, ui, storage);
+
+            assertEquals(i + 1, tasks.size());
+            assertTrue(output.toString().startsWith("Ooo. New " + typeNames[i] + ":"));
+            assertEquals(tasks.get(i).toDataString(), storage.load().get(i).toDataString());
+        }
+    }
+
+    @Test
     void parse_byeWithWhitespace_returnsExitCommand() throws Exception {
         Command command = Parser.parse("  BYE  ");
 
