@@ -4,6 +4,7 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.List;
 import java.util.Scanner;
+import java.util.stream.IntStream;
 
 import gongrilla.task.Task;
 
@@ -94,9 +95,7 @@ public class Ui {
      */
     public void showTaskList(List<Task> tasks) {
         output.println("Gongrilla find tasks in list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            output.println("  " + (i + 1) + "." + tasks.get(i));
-        }
+        printNumberedTasks(tasks);
     }
 
     /**
@@ -106,9 +105,14 @@ public class Ui {
      */
     public void showMatchingTasks(List<Task> tasks) {
         output.println("Here are the matching tasks in your list:");
-        for (int i = 0; i < tasks.size(); i++) {
-            output.println("  " + (i + 1) + "." + tasks.get(i));
-        }
+        printNumberedTasks(tasks);
+    }
+
+    /** Prints tasks in list order with numbering starting at one for this result. */
+    private void printNumberedTasks(List<Task> tasks) {
+        IntStream.range(0, tasks.size())
+                .mapToObj(index -> "  " + (index + 1) + "." + tasks.get(index))
+                .forEachOrdered(output::println);
     }
 
     /**
