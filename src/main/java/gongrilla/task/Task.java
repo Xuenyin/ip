@@ -71,6 +71,15 @@ public class Task {
     }
 
     /**
+     * Returns this task's category for command confirmations.
+     *
+     * @return todo for a basic task without a scheduled date.
+     */
+    public TaskType getType() {
+        return TaskType.TODO;
+    }
+
+    /**
      * Converts the task's common fields to the format used in the data file.
      *
      * @return completion state and task description separated by pipes.

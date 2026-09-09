@@ -9,6 +9,8 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 import java.nio.file.Path;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,8 @@ import gongrilla.command.ExitCommand;
 import gongrilla.command.FindCommand;
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
+import gongrilla.task.Deadline;
+import gongrilla.task.Event;
 import gongrilla.task.TaskList;
 import gongrilla.task.Todo;
 import gongrilla.ui.Ui;
@@ -51,6 +55,72 @@ class ParserCommandTest {
             assertEquals(i + 1, tasks.size());
             assertTrue(output.toString().startsWith("Ooo. New " + typeNames[i] + ":"));
             assertEquals(tasks.get(i).toDataString(), storage.load().get(i).toDataString());
+        }
+    }
+
+    @Test
+    void parse_mixedCaseIndexCommands_acceptsMatchingDispatchKeywords() throws Exception {
+        TaskList tasks = new TaskList(new Todo("first"));
+        Storage storage = createStorage();
+
+        Parser.parse("MaRk 1").execute(tasks, createUi(), storage);
+        assertTrue(tasks.get(0).isDone());
+        Parser.parse("UnMaRk 1").execute(tasks, createUi(), storage);
+        assertEquals(false, tasks.get(0).isDone());
+        Parser.parse("DeLeTe 1").execute(tasks, createUi(), storage);
+        assertEquals(0, tasks.size());
+    }
+
+    @Test
+    void parse_mixedCaseTaskCommands_preservesDescriptionsAndDates() throws Exception {
+        TaskList tasks = new TaskList();
+        Storage storage = createStorage();
+        String[] commands = {
+            "  ToDo   Read Book  ",
+            "  DeAdLiNe Submit Report /BY 2026-09-06 1700  ",
+            "  EvEnT Team Meeting /FROM 6/9/2026 /TO 7/9/2026 1000  "
+        };
+        for (String command : commands) {
+            Parser.parse(command).execute(tasks, createUi(), storage);
+        }
+
+        assertEquals("Read Book", tasks.get(0).getName());
+        Deadline deadline = assertInstanceOf(Deadline.class, tasks.get(1));
+        assertEquals("Submit Report", deadline.getName());
+        assertEquals(LocalDateTime.of(2026, 9, 6, 17, 0), deadline.getBy());
+        Event event = assertInstanceOf(Event.class, tasks.get(2));
+        assertEquals("Team Meeting", event.getName());
+        assertEquals(LocalDateTime.of(2026, 9, 6, 0, 0), event.getFrom());
+        assertEquals(LocalDateTime.of(2026, 9, 7, 10, 0), event.getTo());
+    }
+
+    @Test
+    void parse_missingTaskDetails_preservesSpecificErrors() {
+        assertParsingError("todo   ", "Empty task. What Gongrilla do? Give something.");
+        assertParsingError("deadline report", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("deadline report /by", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("event meeting /from 6/9/2026",
+                "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+        assertParsingError("event meeting /from /to 7/9/2026",
+                "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+    }
+
+    @Test
+    void parse_invalidTaskDates_preservesDateAndRangeValidation() {
+        assertThrows(DateTimeParseException.class, () -> Parser.parse("deadline report /by 31/2/2026"));
+        assertThrows(DateTimeParseException.class, () ->
+                Parser.parse("event meeting /from invalid /to 7/9/2026"));
+        assertThrows(DateTimeParseException.class, () ->
+                Parser.parse("event meeting /from 6/9/2026 /to invalid"));
+        assertThrows(IllegalArgumentException.class, () ->
+                Parser.parse("event meeting /from 7/9/2026 /to 6/9/2026"));
+    }
+
+    @Test
+    void parse_unknownCommandBoundaries_preservesRejection() {
+        String[] commands = {null, "", "   ", "todoish read", "todo\tread", "list extra", "bye extra"};
+        for (String command : commands) {
+            assertParsingError(command, "Hmm. Gongrilla no know that :-(");
         }
     }
 
@@ -161,6 +231,26 @@ class ParserCommandTest {
     void parse_overflowingTaskNumber_reportsSpecificError() {
         assertParsingError("unmark 999999999999999999999999",
                 "Number too big. Gongrilla run out of fingers.");
+    }
+
+    @Test
+    void parse_keywordPrefixesAndTabSeparators_rejectsUnknownCommands() {
+        String[] keywords = {"find", "deadline", "todo", "event", "delete", "mark", "unmark"};
+        for (String keyword : keywords) {
+            assertParsingError(keyword + "ish value", "Hmm. Gongrilla no know that :-(");
+            assertParsingError(keyword + "\tvalue", "Hmm. Gongrilla no know that :-(");
+        }
+    }
+
+    @Test
+    void parse_bareMixedCaseKeywords_preservesCommandSpecificErrors() {
+        assertParsingError("FiNd", "What find? Gongrilla need keyword.");
+        assertParsingError("ToDo", "Empty task. What Gongrilla do? Give something.");
+        assertParsingError("DeAdLiNe", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("EvEnT", "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+        for (String keyword : new String[]{"DeLeTe", "MaRk", "UnMaRk"}) {
+            assertParsingError(keyword, "No number. Gongrilla pick air?");
+        }
     }
 
     private void assertParsingError(String command, String expectedMessage) {

@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
+import gongrilla.task.Task;
 import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
 
@@ -29,6 +30,21 @@ public abstract class Command {
      */
     public abstract void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException;
+
+    /**
+     * Returns the selected task or reports the shared invalid index error.
+     *
+     * @param tasks task list containing the selection.
+     * @param index zero-based index selected by the command.
+     * @return selected task.
+     * @throws GongrillaException if the index does not identify a task.
+     */
+    protected static Task getValidatedTask(TaskList tasks, int index) throws GongrillaException {
+        if (index < 0 || index >= tasks.size()) {
+            throw new GongrillaException("No task there. Human seeing things?");
+        }
+        return tasks.get(index);
+    }
 
     /**
      * Returns whether this command should stop the application.
