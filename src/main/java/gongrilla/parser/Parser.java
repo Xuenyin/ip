@@ -53,73 +53,16 @@ public class Parser {
             return new ListCommand();
         } else if (command.equalsIgnoreCase("find")
                 || command.regionMatches(true, 0, "find ", 0, 5)) {
-            String keyword = command.substring("find".length()).trim();
-            if (keyword.isBlank()) {
-                throw new GongrillaException("What find? Gongrilla need keyword.");
-            }
-            return new FindCommand(keyword);
+            return parseFind(command);
         } else if (command.equalsIgnoreCase("deadline")
                 || command.regionMatches(true, 0, "deadline ", 0, 9)) {
-            String details = command.substring("deadline".length()).trim();
-            String[] parts = details.split("(?i)\\s+/by\\s+", 2);
-            // (?i) -> ignore case, \\s+ -> matches one or more spaces
-            if (parts.length < 2) {
-                throw new GongrillaException(
-                        "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
-            }
-            if (parts[0].isBlank()) {
-                throw new GongrillaException("No task. What Gongrilla supposed to do?");
-            }
-            if (parts[1].isBlank()) {
-                throw new GongrillaException("When task due? Gongrilla need date or date-time.");
-            }
-            String name = parts[0].trim();
-            String dueDateInput = parts[1].trim();
-            LocalDateTime byDateTime = parseDateTime(dueDateInput);
-            Deadline deadline = new Deadline(name, byDateTime);
-
-            return new AddCommand(deadline, TaskType.DEADLINE);
+            return parseDeadline(command);
         } else if (command.equalsIgnoreCase("todo")
                 || command.regionMatches(true, 0, "todo ", 0, 5)) {
-            String name = command.substring("todo".length()).trim();
-            if (name.isBlank()) {
-                throw new GongrillaException("Empty task. What Gongrilla do? Give something.");
-            }
-            Todo todo = new Todo(name);
-
-            return new AddCommand(todo, TaskType.TODO);
+            return parseTodo(command);
         } else if (command.equalsIgnoreCase("event")
                 || command.regionMatches(true, 0, "event ", 0, 6)) {
-            String details = command.substring("event".length()).trim();
-            String[] descriptionAndTimes = details.split("(?i)\\s+/from\\s+", 2);
-
-            if (descriptionAndTimes.length < 2) {
-                throw new GongrillaException(
-                        "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
-                                + "/to D/M/YYYY [HHMM]");
-            }
-            String[] fromAndTo = descriptionAndTimes[1].split("(?i)\\s+/to\\s+", 2);
-            if (fromAndTo.length < 2) {
-                throw new GongrillaException(
-                        "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
-                                + "/to D/M/YYYY [HHMM]");
-            }
-            if (descriptionAndTimes[0].isBlank()) {
-                throw new GongrillaException("Task missing. No task, no banana.");
-            }
-            if (fromAndTo[0].isBlank() || fromAndTo[1].isBlank()) {
-                throw new GongrillaException(
-                        "When event start? When event end? Gongrilla need know.");
-            }
-            String name = descriptionAndTimes[0].trim();
-            String startTimeInput = fromAndTo[0].trim();
-            String endTimeInput = fromAndTo[1].trim();
-            LocalDateTime fromDateTime = parseDateTime(startTimeInput);
-            LocalDateTime toDateTime = parseDateTime(endTimeInput);
-
-            Event event = new Event(name, fromDateTime, toDateTime);
-
-            return new AddCommand(event, TaskType.EVENT);
+            return parseEvent(command);
         } else if (command.equalsIgnoreCase("delete")
                 || command.regionMatches(true, 0, "delete ", 0, 7)) {
             int index = parseTaskIndex(command, "delete");
@@ -137,6 +80,83 @@ public class Parser {
             throw new GongrillaException(
                     "Hmm. Gongrilla no know that :-(");
         }
+    }
+
+    /** Parses and validates the find command after dispatch recognizes its keyword. */
+    private static Command parseFind(String command) throws GongrillaException {
+        String keyword = command.substring("find".length()).trim();
+        if (keyword.isBlank()) {
+            throw new GongrillaException("What find? Gongrilla need keyword.");
+        }
+        return new FindCommand(keyword);
+    }
+
+    /** Parses and validates the deadline command after dispatch recognizes its keyword. */
+    private static Command parseDeadline(String command) throws GongrillaException {
+        String details = command.substring("deadline".length()).trim();
+        String[] parts = details.split("(?i)\\s+/by\\s+", 2);
+        // (?i) -> ignore case, \\s+ -> matches one or more spaces
+        if (parts.length < 2) {
+            throw new GongrillaException(
+                    "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        }
+        if (parts[0].isBlank()) {
+            throw new GongrillaException("No task. What Gongrilla supposed to do?");
+        }
+        if (parts[1].isBlank()) {
+            throw new GongrillaException("When task due? Gongrilla need date or date-time.");
+        }
+        String name = parts[0].trim();
+        String dueDateInput = parts[1].trim();
+        LocalDateTime byDateTime = parseDateTime(dueDateInput);
+        Deadline deadline = new Deadline(name, byDateTime);
+
+        return new AddCommand(deadline, TaskType.DEADLINE);
+    }
+
+    /** Parses and validates the todo command after dispatch recognizes its keyword. */
+    private static Command parseTodo(String command) throws GongrillaException {
+        String name = command.substring("todo".length()).trim();
+        if (name.isBlank()) {
+            throw new GongrillaException("Empty task. What Gongrilla do? Give something.");
+        }
+        Todo todo = new Todo(name);
+
+        return new AddCommand(todo, TaskType.TODO);
+    }
+
+    /** Parses and validates the event command after dispatch recognizes its keyword. */
+    private static Command parseEvent(String command) throws GongrillaException {
+        String details = command.substring("event".length()).trim();
+        String[] descriptionAndTimes = details.split("(?i)\\s+/from\\s+", 2);
+
+        if (descriptionAndTimes.length < 2) {
+            throw new GongrillaException(
+                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+                            + "/to D/M/YYYY [HHMM]");
+        }
+        String[] fromAndTo = descriptionAndTimes[1].split("(?i)\\s+/to\\s+", 2);
+        if (fromAndTo.length < 2) {
+            throw new GongrillaException(
+                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+                            + "/to D/M/YYYY [HHMM]");
+        }
+        if (descriptionAndTimes[0].isBlank()) {
+            throw new GongrillaException("Task missing. No task, no banana.");
+        }
+        if (fromAndTo[0].isBlank() || fromAndTo[1].isBlank()) {
+            throw new GongrillaException(
+                    "When event start? When event end? Gongrilla need know.");
+        }
+        String name = descriptionAndTimes[0].trim();
+        String startTimeInput = fromAndTo[0].trim();
+        String endTimeInput = fromAndTo[1].trim();
+        LocalDateTime fromDateTime = parseDateTime(startTimeInput);
+        LocalDateTime toDateTime = parseDateTime(endTimeInput);
+
+        Event event = new Event(name, fromDateTime, toDateTime);
+
+        return new AddCommand(event, TaskType.EVENT);
     }
 
     /**
