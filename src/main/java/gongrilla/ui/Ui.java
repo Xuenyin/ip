@@ -24,6 +24,8 @@ public class Ui {
 
     private final Scanner scanner;
     private final PrintStream output;
+    private final PrintStream warningOutput;
+    private boolean hasScheduleWarning;
 
     /**
      * Creates a UI connected to the standard console streams.
@@ -39,8 +41,20 @@ public class Ui {
      * @param output destination for chatbot responses.
      */
     public Ui(InputStream input, PrintStream output) {
+        this(input, output, output);
+    }
+
+    /**
+     * Creates a UI that can route warnings to a separate GUI reply.
+     *
+     * @param input source of user commands.
+     * @param output destination for normal responses.
+     * @param warningOutput destination for schedule warnings.
+     */
+    public Ui(InputStream input, PrintStream output, PrintStream warningOutput) {
         this.scanner = new Scanner(input);
         this.output = output;
+        this.warningOutput = warningOutput;
     }
 
     /** Shows the startup banner and greeting. */
@@ -127,6 +141,33 @@ public class Ui {
                 "Ooo. New " + taskType + ":",
                 "  " + task,
                 "Gongrilla count " + taskCount + " tasks.");
+    }
+
+    /**
+     * Shows conflicts after an event has been successfully saved and added.
+     *
+     * @param tasks current tasks in full list order.
+     * @param indices zero-based indices of conflicting tasks in list order.
+     */
+    public void showScheduleWarning(List<Task> tasks, List<Integer> indices) {
+        hasScheduleWarning = true;
+        if (warningOutput == output) {
+            output.println();
+        }
+        warningOutput.println("Ooo. Schedule clash! Task added anyway.");
+        warningOutput.println("Clashes with:");
+        for (int index : indices) {
+            warningOutput.println("  " + (index + 1) + "." + tasks.get(index));
+        }
+    }
+
+    /**
+     * Returns whether this UI has emitted a schedule warning.
+     *
+     * @return whether a warning was displayed.
+     */
+    public boolean hasScheduleWarning() {
+        return hasScheduleWarning;
     }
 
     /**

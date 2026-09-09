@@ -1,6 +1,7 @@
 package gongrilla.command;
 
 import java.io.IOException;
+import java.util.List;
 
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
@@ -41,8 +42,12 @@ public class AddCommand extends Command {
             case EVENT -> "event";
         };
 
+        List<Integer> clashingIndices = tasks.findClashingIndices(task);
         storage.appendAdd(task);
         tasks.add(task);
         ui.showAddedTask(taskTypeName, task, tasks.size());
+        if (!clashingIndices.isEmpty()) {
+            ui.showScheduleWarning(tasks.asList(), clashingIndices);
+        }
     }
 }

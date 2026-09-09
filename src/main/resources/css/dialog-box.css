@@ -17,6 +17,11 @@
     -fx-background-color: yellow;
 }
 
+.warning-label {
+    -fx-background-color: #FFD580;
+    -fx-text-fill: #000000;
+}
+
 .marked-label {
     -fx-background-color: palegreen;
 }

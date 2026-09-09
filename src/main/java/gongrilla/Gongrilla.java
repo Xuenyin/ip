@@ -23,6 +23,8 @@ public class Gongrilla {
     private final TaskList tasks;
     private final String loadingError;
     private String commandType;
+    private String mainResponse = "";
+    private String scheduleWarning = "";
 
     /** Creates Gongrilla using the normal application data file. */
     public Gongrilla() {
@@ -82,17 +84,25 @@ public class Gongrilla {
      */
     public String getResponse(String input) {
         commandType = "Error";
+        mainResponse = "";
+        scheduleWarning = "";
         if (loadingError != null) {
-            return "Gongrilla cannot read saved tasks: " + loadingError;
+            mainResponse = "Gongrilla cannot read saved tasks: " + loadingError;
+            return mainResponse;
         }
 
         ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();
+        ByteArrayOutputStream warningBytes = new ByteArrayOutputStream();
         try (PrintStream responseOutput = new PrintStream(
-                responseBytes, true, StandardCharsets.UTF_8)) {
-            Ui responseUi = new Ui(InputStream.nullInputStream(), responseOutput);
+                responseBytes, true, StandardCharsets.UTF_8);
+                PrintStream warningOutput = new PrintStream(warningBytes, true, StandardCharsets.UTF_8)) {
+            Ui responseUi = new Ui(InputStream.nullInputStream(), responseOutput, warningOutput);
             execute(input, responseUi);
         }
-        return responseBytes.toString(StandardCharsets.UTF_8).stripTrailing();
+        mainResponse = responseBytes.toString(StandardCharsets.UTF_8).stripTrailing();
+        scheduleWarning = warningBytes.toString(StandardCharsets.UTF_8).stripTrailing();
+        return hasScheduleWarning()
+                ? mainResponse + System.lineSeparator().repeat(2) + scheduleWarning : mainResponse;
     }
 
     /**
@@ -102,6 +112,33 @@ public class Gongrilla {
      */
     public String getCommandType() {
         return commandType;
+    }
+
+    /**
+     * Returns whether the last response contains a schedule warning.
+     *
+     * @return whether the GUI should use its warning color.
+     */
+    public boolean hasScheduleWarning() {
+        return !scheduleWarning.isEmpty();
+    }
+
+    /**
+     * Returns the normal reply from the last command without its schedule warning.
+     *
+     * @return normal reply text for the first GUI bubble.
+     */
+    public String getMainResponse() {
+        return mainResponse;
+    }
+
+    /**
+     * Returns the last command's schedule warning without executing the command again.
+     *
+     * @return warning text for a separate bubble, or an empty string when absent.
+     */
+    public String getScheduleWarning() {
+        return scheduleWarning;
     }
 
     /** Executes one command against this instance's shared task list and storage. */

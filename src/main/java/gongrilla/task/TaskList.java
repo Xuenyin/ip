@@ -48,6 +48,30 @@ public class TaskList {
     }
 
     /**
+     * Finds existing incomplete events that overlap an event about to be added.
+     * Zero length events occupy no time, and touching endpoints do not overlap.
+     *
+     * @param task candidate task (which has not yet been added).
+     * @return zero based conflict indices in the current list order.
+     */
+    public List<Integer> findClashingIndices(Task task) {
+        if (!(task instanceof Event candidate) || candidate.isDone()
+                || !candidate.getFrom().isBefore(candidate.getTo())) {
+            return List.of();
+        }
+        List<Integer> indices = new ArrayList<>();
+        for (int i = 0; i < tasks.size(); i++) {
+            if (tasks.get(i) instanceof Event existing && !existing.isDone()
+                    && existing.getFrom().isBefore(existing.getTo())
+                    && candidate.getFrom().isBefore(existing.getTo())
+                    && existing.getFrom().isBefore(candidate.getTo())) {
+                indices.add(i);
+            }
+        }
+        return List.copyOf(indices);
+    }
+
+    /**
      * Removes and returns a task.
      *
      * @param index zero-based task index.

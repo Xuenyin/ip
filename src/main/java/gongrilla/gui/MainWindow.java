@@ -52,12 +52,16 @@ public class MainWindow {
     @FXML
     private void handleUserInput() {
         String input = userInput.getText();
-        String response = gongrilla.getResponse(input);
+        gongrilla.getResponse(input);
         String commandType = gongrilla.getCommandType();
 
         dialogContainer.getChildren().addAll(
                 DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGongrillaDialog(response, gongrillaImage, commandType));
+                DialogBox.getGongrillaDialog(gongrilla.getMainResponse(), gongrillaImage, commandType));
+        if (gongrilla.hasScheduleWarning()) {
+            dialogContainer.getChildren().add(DialogBox.getGongrillaDialog(
+                    gongrilla.getScheduleWarning(), gongrillaImage, commandType, true));
+        }
         userInput.clear();
     }
 }

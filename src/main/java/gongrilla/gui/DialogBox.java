@@ -56,9 +56,27 @@ public class DialogBox extends HBox {
      * @return dialog box with Gongrilla positioned on the left.
      */
     public static DialogBox getGongrillaDialog(String text, Image image, String commandType) {
+        return getGongrillaDialog(text, image, commandType, false);
+    }
+
+    /**
+     * Creates a reply whose warning color takes precedence over its command color.
+     *
+     * @param text message to display.
+     * @param image Gongrilla's display picture.
+     * @param commandType type of command that produced the response.
+     * @param hasScheduleWarning whether the response contains a schedule warning.
+     * @return styled reply with Gongrilla positioned on the left.
+     */
+    public static DialogBox getGongrillaDialog(String text, Image image, String commandType,
+            boolean hasScheduleWarning) {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.flip();
-        dialogBox.applyCommandStyle(commandType);
+        if (hasScheduleWarning) {
+            dialogBox.dialog.getStyleClass().add("warning-label");
+        } else {
+            dialogBox.applyCommandStyle(commandType);
+        }
         return dialogBox;
     }
 
