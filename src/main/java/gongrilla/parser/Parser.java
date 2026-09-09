@@ -171,6 +171,9 @@ public class Parser {
      */
     private static int parseTaskIndex(String command, String keyword)
             throws GongrillaException {
+        // Ensure the command starts with the expected keyword before trimming it off.
+        assert command.regionMatches(true, 0, keyword, 0, keyword.length())
+                : "Expected command to start with '" + keyword + "', but got: " + command;
         String value = command.substring(keyword.length()).trim();
         if (value.isEmpty()) {
             throw new GongrillaException("No number. Gongrilla pick air?");

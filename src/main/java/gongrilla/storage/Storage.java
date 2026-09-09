@@ -168,6 +168,8 @@ public class Storage {
         if (isDone) {
             task.markDone();
         }
+        // Construction and restoration must preserve the validated completion flag.
+        assert task.isDone() == isDone : "Restored task completion differs from the stored flag";
         return task;
     }
 
@@ -217,6 +219,9 @@ public class Storage {
      * @throws IOException if the record cannot be appended.
      */
     private void appendIndexRecord(String operation, int index) throws IOException {
+        // Only the three index-based journal operations may call this helper.
+        assert "X".equals(operation) || "M".equals(operation) || "U".equals(operation)
+                : "Unsupported internal journal operation: " + operation;
         if (index < 0) {
             throw new IllegalArgumentException("The task index cannot be negative.");
         }
@@ -230,6 +235,9 @@ public class Storage {
      * @throws IOException if the directory or data file cannot be written.
      */
     private void appendRecord(String record) throws IOException {
+        // Prevent single records from splitting across multiple lines in the log file.
+        assert !record.contains("\n") && !record.contains("\r")
+                : "Journal record contains an unescaped line break (\\n or \\r)";
         Path parent = filePath.getParent();
         if (parent != null) {
             Files.createDirectories(parent);
