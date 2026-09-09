@@ -29,6 +29,16 @@ public class Deadline extends Task {
     }
 
     /**
+     * Returns this task's category for command confirmations.
+     *
+     * @return deadline.
+     */
+    @Override
+    public TaskType getType() {
+        return TaskType.DEADLINE;
+    }
+
+    /**
      * Converts this deadline into one encoded storage record.
      *
      * @return serialized deadline record.

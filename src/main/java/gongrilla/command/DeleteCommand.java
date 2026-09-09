@@ -35,13 +35,9 @@ public class DeleteCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
-        if (this.index < 0 || this.index >= tasks.size()) {
-            throw new GongrillaException("No task there. Human seeing things?");
-        } else {
-            Task removedTask = tasks.get(index);
-            storage.appendDelete(index);
-            tasks.delete(index);
-            ui.showDeletedTask(removedTask, tasks.size());
-        }
+        Task removedTask = getValidatedTask(tasks, index);
+        storage.appendDelete(index);
+        tasks.delete(index);
+        ui.showDeletedTask(removedTask, tasks.size());
     }
 }

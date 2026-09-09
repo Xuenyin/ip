@@ -6,7 +6,6 @@ import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.Task;
 import gongrilla.task.TaskList;
-import gongrilla.task.TaskType;
 import gongrilla.ui.Ui;
 
 /**
@@ -14,17 +13,14 @@ import gongrilla.ui.Ui;
  */
 public class AddCommand extends Command {
     private final Task task;
-    private final TaskType taskType;
 
     /**
      * Creates a command that adds the supplied task.
      *
      * @param task task that should be added.
-     * @param taskType type of the supplied task, used in the confirmation message.
      */
-    public AddCommand(Task task, TaskType taskType) {
+    public AddCommand(Task task) {
         this.task = task;
-        this.taskType = taskType;
     }
 
     /**
@@ -39,7 +35,7 @@ public class AddCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
-        String taskTypeName = switch (taskType) {
+        String taskTypeName = switch (task.getType()) {
             case TODO -> "todo";
             case DEADLINE -> "deadline";
             case EVENT -> "event";
