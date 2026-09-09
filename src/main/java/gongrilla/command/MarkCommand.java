@@ -35,15 +35,11 @@ public class MarkCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
-        if (this.index < 0 || this.index >= tasks.size()) {
-            throw new GongrillaException("No task there. Human seeing things?");
-        } else {
-            Task task = tasks.get(index);
-            if (!task.isDone()) {
-                storage.appendMark(index);
-                task = tasks.mark(index);
-            }
-            ui.showMarkedTask(task);
+        Task task = getValidatedTask(tasks, index);
+        if (!task.isDone()) {
+            storage.appendMark(index);
+            task = tasks.mark(index);
         }
+        ui.showMarkedTask(task);
     }
 }
