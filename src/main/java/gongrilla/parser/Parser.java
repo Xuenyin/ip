@@ -50,35 +50,38 @@ public class Parser {
             return new ExitCommand();
         } else if (command.equalsIgnoreCase("list")) {
             return new ListCommand();
-        } else if (command.equalsIgnoreCase("find")
-                || command.regionMatches(true, 0, "find ", 0, 5)) {
+        } else if (matchesCommand(command, "find")) {
             return parseFind(command);
-        } else if (command.equalsIgnoreCase("deadline")
-                || command.regionMatches(true, 0, "deadline ", 0, 9)) {
+        } else if (matchesCommand(command, "deadline")) {
             return parseDeadline(command);
-        } else if (command.equalsIgnoreCase("todo")
-                || command.regionMatches(true, 0, "todo ", 0, 5)) {
+        } else if (matchesCommand(command, "todo")) {
             return parseTodo(command);
-        } else if (command.equalsIgnoreCase("event")
-                || command.regionMatches(true, 0, "event ", 0, 6)) {
+        } else if (matchesCommand(command, "event")) {
             return parseEvent(command);
-        } else if (command.equalsIgnoreCase("delete")
-                || command.regionMatches(true, 0, "delete ", 0, 7)) {
+        } else if (matchesCommand(command, "delete")) {
             int index = parseTaskIndex(command, "delete");
 
             return new DeleteCommand(index);
-        } else if (command.equalsIgnoreCase("mark")
-                || command.regionMatches(true, 0, "mark ", 0, 5)) {
+        } else if (matchesCommand(command, "mark")) {
             int index = parseTaskIndex(command, "mark");
             return new MarkCommand(index);
-        } else if (command.equalsIgnoreCase("unmark")
-                || command.regionMatches(true, 0, "unmark ", 0, 7)) {
+        } else if (matchesCommand(command, "unmark")) {
             int index = parseTaskIndex(command, "unmark");
             return new UnmarkCommand(index);
         } else {
             throw new GongrillaException(
                     "Hmm. Gongrilla no know that :-(");
         }
+    }
+
+    /**
+     * Matches a keyword alone or followed by a space, ignoring letter case.
+     * Keeps command prefixes such as "todoish" from being treated as commands.
+     */
+    private static boolean matchesCommand(String command, String keyword) {
+        String prefix = keyword + " ";
+        return command.equalsIgnoreCase(keyword)
+                || command.regionMatches(true, 0, prefix, 0, prefix.length());
     }
 
     /** Parses and validates the find command after dispatch recognizes its keyword. */

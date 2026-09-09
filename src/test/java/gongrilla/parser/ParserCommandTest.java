@@ -220,6 +220,26 @@ class ParserCommandTest {
                 "Number too big. Gongrilla run out of fingers.");
     }
 
+    @Test
+    void parse_keywordPrefixesAndTabSeparators_rejectsUnknownCommands() {
+        String[] keywords = {"find", "deadline", "todo", "event", "delete", "mark", "unmark"};
+        for (String keyword : keywords) {
+            assertParsingError(keyword + "ish value", "Hmm. Gongrilla no know that :-(");
+            assertParsingError(keyword + "\tvalue", "Hmm. Gongrilla no know that :-(");
+        }
+    }
+
+    @Test
+    void parse_bareMixedCaseKeywords_preservesCommandSpecificErrors() {
+        assertParsingError("FiNd", "What find? Gongrilla need keyword.");
+        assertParsingError("ToDo", "Empty task. What Gongrilla do? Give something.");
+        assertParsingError("DeAdLiNe", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("EvEnT", "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+        for (String keyword : new String[]{"DeLeTe", "MaRk", "UnMaRk"}) {
+            assertParsingError(keyword, "No number. Gongrilla pick air?");
+        }
+    }
+
     private void assertParsingError(String command, String expectedMessage) {
         GongrillaException exception = assertThrows(GongrillaException.class, () ->
                 Parser.parse(command));
