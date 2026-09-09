@@ -55,6 +55,19 @@ class ParserCommandTest {
     }
 
     @Test
+    void parse_mixedCaseIndexCommands_acceptsMatchingDispatchKeywords() throws Exception {
+        TaskList tasks = new TaskList(new Todo("first"));
+        Storage storage = createStorage();
+
+        Parser.parse("MaRk 1").execute(tasks, createUi(), storage);
+        assertTrue(tasks.get(0).isDone());
+        Parser.parse("UnMaRk 1").execute(tasks, createUi(), storage);
+        assertEquals(false, tasks.get(0).isDone());
+        Parser.parse("DeLeTe 1").execute(tasks, createUi(), storage);
+        assertEquals(0, tasks.size());
+    }
+
+    @Test
     void parse_byeWithWhitespace_returnsExitCommand() throws Exception {
         Command command = Parser.parse("  BYE  ");
 
