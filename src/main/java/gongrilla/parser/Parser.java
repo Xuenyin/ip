@@ -19,7 +19,6 @@ import gongrilla.command.UnmarkCommand;
 import gongrilla.exception.GongrillaException;
 import gongrilla.task.Deadline;
 import gongrilla.task.Event;
-import gongrilla.task.TaskType;
 import gongrilla.task.Todo;
 
 /**
@@ -111,7 +110,7 @@ public class Parser {
         LocalDateTime byDateTime = parseDateTime(dueDateInput);
         Deadline deadline = new Deadline(name, byDateTime);
 
-        return new AddCommand(deadline, TaskType.DEADLINE);
+        return new AddCommand(deadline);
     }
 
     /** Parses and validates the todo command after dispatch recognizes its keyword. */
@@ -122,7 +121,7 @@ public class Parser {
         }
         Todo todo = new Todo(name);
 
-        return new AddCommand(todo, TaskType.TODO);
+        return new AddCommand(todo);
     }
 
     /** Parses and validates the event command after dispatch recognizes its keyword. */
@@ -156,7 +155,7 @@ public class Parser {
 
         Event event = new Event(name, fromDateTime, toDateTime);
 
-        return new AddCommand(event, TaskType.EVENT);
+        return new AddCommand(event);
     }
 
     /**

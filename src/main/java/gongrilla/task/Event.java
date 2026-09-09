@@ -38,6 +38,16 @@ public class Event extends Task {
     }
 
     /**
+     * Returns this task's category for command confirmations.
+     *
+     * @return event.
+     */
+    @Override
+    public TaskType getType() {
+        return TaskType.EVENT;
+    }
+
+    /**
      * Converts this event into one encoded storage record.
      *
      * @return serialized event record.
