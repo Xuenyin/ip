@@ -74,6 +74,7 @@ public class DialogBox extends HBox {
     /** Applies the response color associated with the executed command. */
     private void applyCommandStyle(String commandType) {
         String styleClass = switch (commandType) {
+            case "Error" -> "error-label";
             case "AddCommand" -> "add-label";
             case "MarkCommand" -> "marked-label";
             case "DeleteCommand" -> "delete-label";
@@ -82,6 +83,9 @@ public class DialogBox extends HBox {
 
         if (styleClass != null) {
             dialog.getStyleClass().add(styleClass);
+        }
+        if ("Error".equals(commandType)) {
+            dialog.setText("ERROR\n" + dialog.getText());
         }
     }
 }
