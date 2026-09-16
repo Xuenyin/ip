@@ -17,7 +17,7 @@
 }
 
 .add-label {
-    -fx-background-color: black, yellow;
+    -fx-background-color: black, #689ff7;
     -fx-text-fill: black;
 }
 
