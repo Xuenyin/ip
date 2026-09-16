@@ -13,6 +13,7 @@ import gongrilla.command.Command;
 import gongrilla.command.DeleteCommand;
 import gongrilla.command.ExitCommand;
 import gongrilla.command.FindCommand;
+import gongrilla.command.HelpCommand;
 import gongrilla.command.ListCommand;
 import gongrilla.command.MarkCommand;
 import gongrilla.command.UnmarkCommand;
@@ -48,6 +49,8 @@ public class Parser {
         command = command == null ? "" : command.trim();
         if (command.equalsIgnoreCase("bye")) {
             return new ExitCommand();
+        } else if (command.equalsIgnoreCase("help")) {
+            return new HelpCommand();
         } else if (command.equalsIgnoreCase("list")) {
             return new ListCommand();
         } else if (matchesCommand(command, "find")) {
@@ -100,7 +103,7 @@ public class Parser {
         // (?i) -> ignore case, \\s+ -> matches one or more spaces
         if (parts.length < 2) {
             throw new GongrillaException(
-                    "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+                    "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
         }
         if (parts[0].isBlank()) {
             throw new GongrillaException("No task. What Gongrilla supposed to do?");
@@ -134,13 +137,13 @@ public class Parser {
 
         if (descriptionAndTimes.length < 2) {
             throw new GongrillaException(
-                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+                    "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] "
                             + "/to D/M/YYYY [HHMM]");
         }
         String[] fromAndTo = descriptionAndTimes[1].split("(?i)\\s+/to\\s+", 2);
         if (fromAndTo.length < 2) {
             throw new GongrillaException(
-                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+                    "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] "
                             + "/to D/M/YYYY [HHMM]");
         }
         if (descriptionAndTimes[0].isBlank()) {

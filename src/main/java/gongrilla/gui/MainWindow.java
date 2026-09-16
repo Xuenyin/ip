@@ -1,6 +1,7 @@
 package gongrilla.gui;
 
 import gongrilla.Gongrilla;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
@@ -27,7 +28,7 @@ public class MainWindow {
     /** Initializes scrolling after FXMLLoader injects the controls. */
     @FXML
     public void initialize() {
-        scrollPane.vvalueProperty().bind(dialogContainer.heightProperty());
+        scrollPane.setFitToWidth(true);
     }
 
     /**
@@ -44,7 +45,7 @@ public class MainWindow {
                 + " |  (..)  |  \n"
                 + " \\   __   / \n"
                 + "  \\______/  \n"
-                + "sup";
+                + "sup. Type help for commands.";
         dialogContainer.getChildren().add(DialogBox.getGongrillaDialog(welcome, gongrillaImage, "Welcome"));
     }
 
@@ -55,9 +56,16 @@ public class MainWindow {
         String response = gongrilla.getResponse(input);
         String commandType = gongrilla.getCommandType();
 
-        dialogContainer.getChildren().addAll(
-                DialogBox.getUserDialog(input, userImage),
-                DialogBox.getGongrillaDialog(response, gongrillaImage, commandType));
+        DialogBox reply = DialogBox.getGongrillaDialog(response, gongrillaImage, commandType);
+        dialogContainer.getChildren().addAll(DialogBox.getUserDialog(input, userImage), reply);
         userInput.clear();
+        Platform.runLater(() -> {
+            scrollPane.applyCss();
+            scrollPane.layout();
+            double scrollableHeight = dialogContainer.getHeight() - scrollPane.getViewportBounds().getHeight();
+            double position = "HelpCommand".equals(commandType) && scrollableHeight > 0
+                    ? Math.min(1, reply.getBoundsInParent().getMinY() / scrollableHeight) : 1;
+            scrollPane.setVvalue(position);
+        });
     }
 }

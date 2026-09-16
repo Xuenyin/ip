@@ -1,6 +1,7 @@
 package gongrilla.parser;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,6 +21,7 @@ import gongrilla.command.Command;
 import gongrilla.command.DeleteCommand;
 import gongrilla.command.ExitCommand;
 import gongrilla.command.FindCommand;
+import gongrilla.command.HelpCommand;
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
 import gongrilla.task.Deadline;
@@ -53,7 +55,7 @@ class ParserCommandTest {
             Parser.parse(commands[i]).execute(tasks, ui, storage);
 
             assertEquals(i + 1, tasks.size());
-            assertTrue(output.toString().startsWith("Ooo. New " + typeNames[i] + ":"));
+            assertTrue(output.toString().startsWith("higa higa click click. New " + typeNames[i] + ":"));
             assertEquals(tasks.get(i).toDataString(), storage.load().get(i).toDataString());
         }
     }
@@ -97,12 +99,12 @@ class ParserCommandTest {
     @Test
     void parse_missingTaskDetails_preservesSpecificErrors() {
         assertParsingError("todo   ", "Empty task. What Gongrilla do? Give something.");
-        assertParsingError("deadline report", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
-        assertParsingError("deadline report /by", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("deadline report", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("deadline report /by", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
         assertParsingError("event meeting /from 6/9/2026",
-                "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
         assertParsingError("event meeting /from /to 7/9/2026",
-                "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
     }
 
     @Test
@@ -122,6 +124,14 @@ class ParserCommandTest {
         for (String command : commands) {
             assertParsingError(command, "Hmm. Gongrilla no know that :-(");
         }
+    }
+
+    @Test
+    void parse_helpWithWhitespace_returnsNonExitingHelpCommand() throws Exception {
+        Command command = Parser.parse("  HeLp  ");
+
+        assertInstanceOf(HelpCommand.class, command);
+        assertFalse(command.isExit());
     }
 
     @Test
@@ -200,7 +210,7 @@ class ParserCommandTest {
         GongrillaException exception = assertThrows(GongrillaException.class, () ->
                 Parser.parse("event meeting /to 3/12/2019 1700 /from 3/12/2019 0900"));
 
-        assertEquals("Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
+        assertEquals("higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] "
                         + "/to D/M/YYYY [HHMM]",
                 exception.getMessage());
     }
@@ -246,8 +256,9 @@ class ParserCommandTest {
     void parse_bareMixedCaseKeywords_preservesCommandSpecificErrors() {
         assertParsingError("FiNd", "What find? Gongrilla need keyword.");
         assertParsingError("ToDo", "Empty task. What Gongrilla do? Give something.");
-        assertParsingError("DeAdLiNe", "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
-        assertParsingError("EvEnT", "Ooo? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+        assertParsingError("DeAdLiNe", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("EvEnT",
+                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
         for (String keyword : new String[]{"DeLeTe", "MaRk", "UnMaRk"}) {
             assertParsingError(keyword, "No number. Gongrilla pick air?");
         }

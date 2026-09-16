@@ -46,7 +46,7 @@ class AddCommandTest {
 
             assertSame(task, tasks.get(i));
             assertEquals(i + 1, tasks.size());
-            assertTrue(output.toString().startsWith("Ooo. New " + labels.get(i) + ":"));
+            assertTrue(output.toString().startsWith("higa higa click click. New " + labels.get(i) + ":"));
             Task restored = storage.load().get(i);
             assertEquals(task.toDataString(), restored.toDataString());
             assertEquals(task.getType(), restored.getType());

@@ -48,8 +48,8 @@ public class Ui {
         showLine();
         output.print(BANNER);
         printLines(
-                "Ooo",
-                "Human back. Gongrilla ready.");
+                "higa higa click click",
+                "Human back. Gongrilla ready. Type help for commands.");
         showLine();
     }
 
@@ -83,9 +83,43 @@ public class Ui {
         }
     }
 
+    /** Shows the command reference with syntax and examples. */
+    public void showHelp() {
+        printLines(
+                "Neigh Neigh Neigh:",
+                "",
+                "Start here",
+                "help - show this guide",
+                "list - show all tasks",
+                "find <keyword> - search task names",
+                "bye - say goodbye (exits the console)",
+                "",
+                "Add tasks",
+                "todo <task> - add a task",
+                "deadline <task> /by <date> - add a deadline",
+                "event <task> /from <date> /to <date> - add an event",
+                "Replace <...> with your own words.",
+                "",
+                "Update tasks",
+                "mark <number> - mark done",
+                "unmark <number> - mark incomplete",
+                "delete <number> - remove a task",
+                "Use task numbers from list, not find. Numbers start at 1.",
+                "",
+                "Dates:",
+                "D/M/YYYY or YYYY-MM-DD; optional 24-hour HHMM.",
+                "if no time, Gongrilla use midnight. Event end must not be before start.",
+                " ",
+                "Examples:",
+                "todo buy bananas",
+                "deadline buy bananas /by 20/9/2026 1800",
+                "event lunch /from 20/9/2026 1200 /to 20/9/2026 1300",
+                "mark 1");
+    }
+
     /** Shows the farewell message. */
     public void showGoodbye() {
-        output.println("Fine. Take banana go \uD83C\uDF4C");
+        output.println("Fine. Bring banana next time.");
     }
 
     /**
@@ -124,7 +158,7 @@ public class Ui {
      */
     public void showAddedTask(String taskType, Task task, int taskCount) {
         printLines(
-                "Ooo. New " + taskType + ":",
+                "higa higa click click. New " + taskType + ":",
                 "  " + task,
                 "Gongrilla count " + taskCount + " tasks.");
     }
@@ -149,7 +183,7 @@ public class Ui {
      */
     public void showMarkedTask(Task task) {
         printLines(
-                "Banana! Gongrilla happy.",
+                "Marked. oink oink \uD83D\uDC34",
                 "  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
@@ -160,7 +194,7 @@ public class Ui {
      */
     public void showUnmarkedTask(Task task) {
         printLines(
-                "No Banana! Gongrilla sad.",
+                "Unmarked. \uD83D\uDC34\uD83D\uDC94",
                 "  " + task.getIsDoneStatus() + " " + task.getName());
     }
 
@@ -170,7 +204,7 @@ public class Ui {
      * @param message explanation of the error.
      */
     public void showError(String message) {
-        output.println(message);
+        printLines(message, "Type help. Gongrilla show commands.");
     }
 
     /**

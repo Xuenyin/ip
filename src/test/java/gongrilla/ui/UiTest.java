@@ -59,7 +59,7 @@ class UiTest {
         ui.showAddedTask("todo", new Todo("read book"), 1);
 
         assertEquals(String.join(System.lineSeparator(),
-                "Ooo. New todo:", "  [T][ ] read book", "Gongrilla count 1 tasks.", ""),
+                "higa higa click click. New todo:", "  [T][ ] read book", "Gongrilla count 1 tasks.", ""),
                 output.toString(StandardCharsets.UTF_8));
     }
 }
