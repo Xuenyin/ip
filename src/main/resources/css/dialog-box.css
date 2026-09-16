@@ -1,28 +1,34 @@
 .label {
-    background: white;
-    -fx-background-color: background;
-    -fx-border-width: 2px;
-    -fx-background-radius: 1em 1em 0 1em;
-    -fx-border-radius: 1em 1em 0 1em;
-    -fx-font-family: "Lucida Console";
-    -fx-text-fill: ladder(background, white 49%, black 50%);
+    /* Nested backgrounds keep the 3px outline flush with the rounded fill. */
+    -fx-background-color: black, #FFE135;
+    -fx-background-insets: 0, 3px;
+    -fx-background-radius: 16px 4px 16px 16px, 13px 1px 13px 13px;
+    -fx-text-fill: black;
+    -fx-font-family: "Consolas";
+    -fx-font-size: 13px;
+    -fx-padding: 12px;
+    -fx-effect: dropshadow(gaussian, black, 0, 0, 4, 4);
 }
 
 .reply-label {
-    -fx-background-radius: 1em 1em 1em 0;
-    -fx-border-radius: 1em 1em 1em 0;
+    -fx-background-color: black, #172d1f;
+    -fx-text-fill: #dcfce7;
+    -fx-background-radius: 4px 16px 16px 16px, 1px 13px 13px 13px;
 }
 
 .add-label {
-    -fx-background-color: yellow;
+    -fx-background-color: black, yellow;
+    -fx-text-fill: black;
 }
 
 .marked-label {
-    -fx-background-color: palegreen;
+    -fx-background-color: black, palegreen;
+    -fx-text-fill: black;
 }
 
 .delete-label {
-    -fx-background-color: lightpink;
+    -fx-background-color: black, lightpink;
+    -fx-text-fill: black;
 }
 
 #displayPicture {
