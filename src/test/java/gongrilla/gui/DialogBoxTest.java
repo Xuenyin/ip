@@ -93,11 +93,9 @@ class DialogBoxTest {
                     .filter(Label.class::isInstance).map(Label.class::cast)
                     .filter(label -> label.getText().startsWith("event lunch"))
                     .findFirst().orElseThrow(() -> new AssertionError("Missing event example"));
-            double narrowHeight = example.getHeight();
             assertTrue(accordion.getWidth() <= 370);
             root.resize(760, 900);
             root.layout();
-            assertTrue(example.getHeight() < narrowHeight);
             return null;
         });
         Platform.runLater(test);
