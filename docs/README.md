@@ -1,60 +1,122 @@
-# gongrilla.Gongrilla User Guide
+# Gongrilla User Guide
 
-// Update the title above to match the actual product name
+<img src="Ui.png" alt="Gongrilla GUI">
 
-// Product screenshot goes here
+Gongrilla is a friendly task-management chatbot. Type a command in the input box (or terminal) and press **Enter** or click `Send` to get started!
 
-// Product intro goes here
+---
 
-## Getting help
+## Quick start
 
-Type `help` to see all supported commands, their syntax, and examples.
-Command words are case-insensitive, so `HELP` works too.
-Help does not change your tasks. When a command fails, Gongrilla points you to `help`.
+1. Start Gongrilla.
+2. Type `help` to see the command reference.
+3. Add a task, for example: `todo buy bananas`.
+4. Type `list` to view your tasks and their numbers.
 
-## Input and data validation
+---
+## Features
 
-- Leading/trailing spaces, repeated spaces, and tabs between command parts are
-  accepted. Date/time spacing is normalized. Line breaks and hidden control
-  characters in a single command are rejected.
-- Use `/by` once for deadlines, or `/from` then `/to` once each for events.
-  Repeated, missing, unknown, and out-of-order named parameters report errors.
-  Standalone slash-prefixed words are reserved as parameters in these commands.
-- Dates must exist, and an event's end must be strictly after its start.
-  A date without a time means midnight; use explicit times for same-day events.
-- Duplicate additions are rejected when type, description, and dates match.
-  Description comparison ignores case and extra whitespace; completion status
-  does not make a task different. Different dates or task types remain allowed.
-- Missing data files are created on the first successful write. Corrupt or
-  unreadable files produce errors without being replaced. Repair the file or
-  permissions and restart the app. Previously saved zero-duration events must
-  be corrected before the journal can load; existing duplicate records are
-  retained, but adding another duplicate is rejected.
-- Locked files and failed writes leave the in-memory task list unchanged.
-  Check permissions, free disk space, and other running instances before retrying.
-  Journal writes use a file lock and attempt to roll back partial writes.
-  Locks protect individual writes; multiple concurrent app sessions are not
-  supported because each session maintains its own in-memory task list.
+### Get help: `help`
 
-## Adding deadlines
+Displays Gongrilla's command reference and examples.
 
-// Describe the action and its outcome.
+**Format:** `help`
 
-// Give examples of usage
+***
 
-Example: `keyword (optional arguments)`
+### Add a task: `todo`
 
-// A description of the expected outcome goes here
+Adds a task without a date.
 
-```
-expected output
-```
+**Format:** `todo TASK`
 
-## Feature ABC
+**Example:** `todo submit project report`
+***
 
-// Feature details
+### Add a deadline: `deadline`
 
+Adds a task with a due date or date and time.
 
-## Feature XYZ
+**Format:** `deadline TASK /by DATE [TIME]`
 
-// Feature details
+**Example:** `deadline submit report /by 20/9/2026 1800`
+***
+
+### Add an event: `event`
+
+Adds a task with a start and end date/time. The end must be after the start.
+
+**Format:** `event EVENT /from START /to END`
+
+**Example:** `event team meeting /from 20/9/2026 1200 /to 20/9/2026 1300`
+***
+
+### View all tasks: `list`
+
+Shows every task in the current list. The displayed numbers are used with `mark`, `unmark`, and `delete`.
+
+**Format:** `list`
+***
+
+### Find tasks: `find`
+
+Searches task descriptions for a keyword. The search is case-insensitive and does not change your tasks.
+
+**Format:** `find KEYWORD`
+
+**Example:** `find report`
+***
+
+### Mark a task as done: `mark`
+
+Marks the task with the specified number as completed.
+
+**Format:** `mark NUMBER`
+
+**Example:** `mark 1`
+
+***
+
+### Mark a task as incomplete: `unmark`
+
+Removes the completed status from a task.
+
+**Format:** `unmark NUMBER`
+
+**Example:** `unmark 1`
+
+***
+
+### Delete a task: `delete`
+
+Removes the task with the specified number.
+
+**Format:** `delete NUMBER`
+
+**Example:** `delete 2`
+
+***
+
+### Exit Gongrilla: `bye`
+
+Closes the chatbot.
+
+**Format:** `bye`
+
+---
+
+## Dates and input rules
+
+- Dates can be written as `D/M/YYYY` or `YYYY-MM-DD`.
+- Add an optional 24-hour time in `HHMM` format, such as `1800`.
+- A date without a time is treated as midnight.
+- Use `/by` for deadlines, and `/from` followed by `/to` for events. Each parameter must appear once and in that order.
+- Task numbers start at `1`. Use the numbers shown by `list`; `find` results are for viewing only.
+- Commands are case-insensitive, and extra spaces or tabs are accepted.
+- If a command is invalid, Gongrilla explains the problem. Type `help` to check the required format.
+
+--- 
+
+## Saved data
+
+Gongrilla stores tasks in `data/gongrilla.txt` and saves changes automatically. Do not run multiple Gongrilla sessions at the same time, as each session keeps its own task list.
