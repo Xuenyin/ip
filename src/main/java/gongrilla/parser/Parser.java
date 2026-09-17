@@ -5,14 +5,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.format.ResolverStyle;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import gongrilla.command.AddCommand;
 import gongrilla.command.Command;
 import gongrilla.command.DeleteCommand;
 import gongrilla.command.ExitCommand;
 import gongrilla.command.FindCommand;
+import gongrilla.command.HelpCommand;
 import gongrilla.command.ListCommand;
 import gongrilla.command.MarkCommand;
 import gongrilla.command.UnmarkCommand;
@@ -45,9 +49,15 @@ public class Parser {
      * @throws GongrillaException if the command is missing or malformed.
      */
     public static Command parse(String command) throws GongrillaException {
-        command = command == null ? "" : command.trim();
+        command = command == null ? "" : command;
+        if (command.chars().anyMatch(character -> Character.isISOControl(character) && character != '\t')) {
+            throw new GongrillaException("One command at a time. No line breaks or control characters.");
+        }
+        command = command.replaceAll("[\\t\\p{Zs}]", " ").strip();
         if (command.equalsIgnoreCase("bye")) {
             return new ExitCommand();
+        } else if (command.equalsIgnoreCase("help")) {
+            return new HelpCommand();
         } else if (command.equalsIgnoreCase("list")) {
             return new ListCommand();
         } else if (matchesCommand(command, "find")) {
@@ -96,12 +106,7 @@ public class Parser {
     /** Parses and validates the deadline command after dispatch recognizes its keyword. */
     private static Command parseDeadline(String command) throws GongrillaException {
         String details = command.substring("deadline".length()).trim();
-        String[] parts = details.split("(?i)\\s+/by\\s+", 2);
-        // (?i) -> ignore case, \\s+ -> matches one or more spaces
-        if (parts.length < 2) {
-            throw new GongrillaException(
-                    "Ooo? Deadline need: <task> /by D/M/YYYY [HHMM]");
-        }
+        String[] parts = splitParameters(details, List.of("by"));
         if (parts[0].isBlank()) {
             throw new GongrillaException("No task. What Gongrilla supposed to do?");
         }
@@ -130,35 +135,51 @@ public class Parser {
     /** Parses and validates the event command after dispatch recognizes its keyword. */
     private static Command parseEvent(String command) throws GongrillaException {
         String details = command.substring("event".length()).trim();
-        String[] descriptionAndTimes = details.split("(?i)\\s+/from\\s+", 2);
-
-        if (descriptionAndTimes.length < 2) {
-            throw new GongrillaException(
-                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
-                            + "/to D/M/YYYY [HHMM]");
-        }
-        String[] fromAndTo = descriptionAndTimes[1].split("(?i)\\s+/to\\s+", 2);
-        if (fromAndTo.length < 2) {
-            throw new GongrillaException(
-                    "Ooo? Event need: <task> /from D/M/YYYY [HHMM] "
-                            + "/to D/M/YYYY [HHMM]");
-        }
-        if (descriptionAndTimes[0].isBlank()) {
+        String[] parts = splitParameters(details, List.of("from", "to"));
+        if (parts[0].isBlank()) {
             throw new GongrillaException("Task missing. No task, no banana.");
         }
-        if (fromAndTo[0].isBlank() || fromAndTo[1].isBlank()) {
+        if (parts[1].isBlank() || parts[2].isBlank()) {
             throw new GongrillaException(
                     "When event start? When event end? Gongrilla need know.");
         }
-        String name = descriptionAndTimes[0].trim();
-        String startTimeInput = fromAndTo[0].trim();
-        String endTimeInput = fromAndTo[1].trim();
+        String name = parts[0].trim();
+        String startTimeInput = parts[1].trim();
+        String endTimeInput = parts[2].trim();
         LocalDateTime fromDateTime = parseDateTime(startTimeInput);
         LocalDateTime toDateTime = parseDateTime(endTimeInput);
 
         Event event = new Event(name, fromDateTime, toDateTime);
 
         return new AddCommand(event);
+    }
+
+    /** Splits named parameters and rejects missing, repeated, unknown, or out-of-order markers. */
+    private static String[] splitParameters(String details, List<String> expected) throws GongrillaException {
+        Matcher matcher = Pattern.compile("(?i)(?<!\\S)/([a-z]+)(?=\\s|$)").matcher(details);
+        List<String> values = new ArrayList<>();
+        List<String> seen = new ArrayList<>();
+        int start = 0;
+        while (matcher.find()) {
+            String parameter = matcher.group(1).toLowerCase(Locale.ROOT);
+            if (seen.contains(parameter)) {
+                throw new GongrillaException("Too many /" + parameter + ". Gongrilla need it only once.");
+            }
+            if (!expected.contains(parameter)) {
+                throw new GongrillaException("Gongrilla no expect /" + parameter + " here.");
+            }
+            if (!expected.get(seen.size()).equals(parameter)) {
+                throw new GongrillaException("Use /" + String.join(" then /", expected) + " in that order.");
+            }
+            values.add(details.substring(start, matcher.start()).trim());
+            seen.add(parameter);
+            start = matcher.end();
+        }
+        if (seen.size() != expected.size()) {
+            throw new GongrillaException("Missing /" + expected.get(seen.size()) + ". Type help for the format.");
+        }
+        values.add(details.substring(start).trim());
+        return values.toArray(String[]::new);
     }
 
     /**
@@ -208,6 +229,7 @@ public class Parser {
      * @throws DateTimeParseException if none of the supported formats match.
      */
     private static LocalDateTime parseDateTime(String value) throws GongrillaException {
+        value = value.replaceAll("\\s+", " ");
         for (DateTimeFormatter formatter : INPUT_DATE_TIME_FORMATS) {
             try {
                 return LocalDateTime.parse(value, formatter);

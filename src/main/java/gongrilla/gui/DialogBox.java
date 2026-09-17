@@ -9,10 +9,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.control.Accordion;
 import javafx.scene.control.Label;
+import javafx.scene.control.TitledPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.VBox;
 
 /** Displays a message together with its speaker's picture. */
 public class DialogBox extends HBox {
@@ -59,7 +63,47 @@ public class DialogBox extends HBox {
         DialogBox dialogBox = new DialogBox(text, image);
         dialogBox.flip();
         dialogBox.applyCommandStyle(commandType);
+        if ("HelpCommand".equals(commandType)) {
+            dialogBox.showHelpSections(text);
+        }
         return dialogBox;
+    }
+
+    /** Presents the same help text as the console in expandable, full-width sections. */
+    private void showHelpSections(String text) {
+        String[] sections = text.replace("\r\n", "\n").split("\n\\h*\n");
+        Label heading = new Label(sections[0]);
+        heading.getStyleClass().add("help-heading");
+        heading.setWrapText(true);
+        Accordion accordion = new Accordion();
+        accordion.setMinWidth(0);
+        for (int i = 1; i < sections.length; i++) {
+            String[] section = sections[i].split("\\R", 2);
+            VBox rows = new VBox(10);
+            rows.getStyleClass().add("help-rows");
+            if (section.length > 1) {
+                for (String line : section[1].split("\\R")) {
+                    Label row = new Label(line);
+                    row.setWrapText(true);
+                    row.setMinWidth(0);
+                    row.setMinHeight(USE_PREF_SIZE);
+                    row.setMaxWidth(Double.MAX_VALUE);
+                    rows.getChildren().add(row);
+                }
+            }
+            TitledPane pane = new TitledPane(section[0], rows);
+            pane.setAnimated(false);
+            accordion.getPanes().add(pane);
+        }
+        if (!accordion.getPanes().isEmpty()) {
+            accordion.setExpandedPane(accordion.getPanes().get(0));
+        }
+        VBox card = new VBox(10, heading, accordion);
+        card.setMinWidth(0);
+        card.getStyleClass().add("help-card");
+        HBox.setHgrow(card, Priority.ALWAYS);
+        getChildren().setAll(card);
+        setMinWidth(0);
     }
 
     /** Places Gongrilla's picture on the left and its response on the right. */

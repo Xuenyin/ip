@@ -25,6 +25,7 @@ jacoco {
 
 jacocoTestReport {
     dependsOn test
+    executionData fileTree(layout.buildDirectory.dir('jacoco/console')) { include '*.exec' }
     reports {
         xml.required = true
         html.required = true
@@ -33,6 +34,7 @@ jacocoTestReport {
 
 jacocoTestCoverageVerification {
     dependsOn test
+    executionData fileTree(layout.buildDirectory.dir('jacoco/console')) { include '*.exec' }
     violationRules {
         rule {
             limit {
@@ -75,6 +77,14 @@ dependencies {
 test {
     useJUnitPlatform()
     enableAssertions = true
+
+    // Keep coverage from isolated console JVMs and merge it with the test worker's data.
+    def consoleCoverageDirectory = layout.buildDirectory.dir('jacoco/console')
+    systemProperty 'gongrilla.console.coverageDirectory', consoleCoverageDirectory.get().asFile.absolutePath
+    doFirst {
+        delete consoleCoverageDirectory
+        consoleCoverageDirectory.get().asFile.mkdirs()
+    }
 
     testLogging {
         events 'passed', 'skipped', 'failed'

@@ -45,13 +45,10 @@ class DateTaskTest {
     }
 
     @Test
-    void event_sameStartAndEndDateTime_isAllowed() {
+    void event_sameStartAndEndDateTime_isRejected() {
         LocalDateTime dateTime = LocalDateTime.of(2020, 2, 29, 12, 0);
 
-        Event event = new Event("instant event", dateTime, dateTime);
-
-        assertEquals(dateTime, event.getFrom());
-        assertEquals(dateTime, event.getTo());
+        assertThrows(IllegalArgumentException.class, () -> new Event("instant event", dateTime, dateTime));
     }
 
     @Test

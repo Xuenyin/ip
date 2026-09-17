@@ -86,7 +86,7 @@ class IndexedCommandTest {
         assertTrue(task.isDone());
         assertTrue(storage.load().get(0).isDone());
         assertEquals(2, Files.readAllLines(path).size());
-        assertTrue(output.toString().contains("Banana! Gongrilla happy."));
+        assertTrue(output.toString().contains("Marked. oink oink \uD83D\uDC34"));
 
         output.reset();
         new UnmarkCommand(0).execute(tasks, ui, storage);
@@ -94,7 +94,7 @@ class IndexedCommandTest {
         assertFalse(task.isDone());
         assertFalse(storage.load().get(0).isDone());
         assertEquals(3, Files.readAllLines(path).size());
-        assertTrue(output.toString().contains("No Banana! Gongrilla sad."));
+        assertTrue(output.toString().contains("Unmarked. \uD83D\uDC34\uD83D\uDC94"));
 
         output.reset();
         new DeleteCommand(0).execute(tasks, ui, storage);

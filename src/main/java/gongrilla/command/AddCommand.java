@@ -4,6 +4,8 @@ import java.io.IOException;
 
 import gongrilla.exception.GongrillaException;
 import gongrilla.storage.Storage;
+import gongrilla.task.Deadline;
+import gongrilla.task.Event;
 import gongrilla.task.Task;
 import gongrilla.task.TaskList;
 import gongrilla.ui.Ui;
@@ -35,6 +37,11 @@ public class AddCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
+        for (Task existing : tasks.asList()) {
+            if (hasSameDetails(existing)) {
+                throw new GongrillaException("Gongrilla already have that task. Use list to find it.");
+            }
+        }
         String taskTypeName = switch (task.getType()) {
             case TODO -> "todo";
             case DEADLINE -> "deadline";
@@ -44,5 +51,21 @@ public class AddCommand extends Command {
         storage.appendAdd(task);
         tasks.add(task);
         ui.showAddedTask(taskTypeName, task, tasks.size());
+    }
+
+    /** Compares type, normalized description and dates, ignoring completion state. */
+    private boolean hasSameDetails(Task existing) {
+        String name = task.getName().strip().replaceAll("(?U)\\s+", " ");
+        String existingName = existing.getName().strip().replaceAll("(?U)\\s+", " ");
+        if (existing.getType() != task.getType() || !existingName.equalsIgnoreCase(name)) {
+            return false;
+        }
+        if (task instanceof Deadline deadline && existing instanceof Deadline other) {
+            return deadline.getBy().equals(other.getBy());
+        }
+        if (task instanceof Event event && existing instanceof Event other) {
+            return event.getFrom().equals(other.getFrom()) && event.getTo().equals(other.getTo());
+        }
+        return true;
     }
 }

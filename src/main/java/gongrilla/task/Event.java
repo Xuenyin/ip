@@ -25,15 +25,15 @@ public class Event extends Task {
      * @param name description of the event.
      * @param from event start date and time.
      * @param to event end date and time.
-     * @throws IllegalArgumentException if {@code from} is after {@code to}.
+     * @throws IllegalArgumentException if {@code from} is not before {@code to}.
      */
     public Event(String name, LocalDateTime from, LocalDateTime to) {
         super(name);
         this.from = Objects.requireNonNull(from, "Where start time? Gongrilla need.");
         this.to = Objects.requireNonNull(to, "Where end time? Gongrilla need.");
-        if (from.isAfter(to)) {
+        if (!from.isBefore(to)) {
             throw new IllegalArgumentException(
-                    "Start time cannot be after end time. Even banana know that.");
+                    "Start time cannot be after or equal to end time. Give event some time.");
         }
     }
 

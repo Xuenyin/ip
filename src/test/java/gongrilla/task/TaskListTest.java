@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,33 @@ import org.junit.jupiter.api.Test;
  * Tests task-list ownership and mutation operations.
  */
 class TaskListTest {
+    @Test
+    void constructor_mutableList_isCopiedAndSnapshotsRemainStable() {
+        Task first = new Todo("first");
+        List<Task> source = new ArrayList<>(List.of(first));
+        TaskList tasks = new TaskList(source);
+        source.clear();
+        assertEquals(List.of(first), tasks.asList());
+        List<Task> snapshot = tasks.asList();
+        tasks.add(new Todo("second"));
+        assertEquals(List.of(first), snapshot);
+        assertEquals(2, tasks.size());
+    }
+
+    @Test
+    void indexedOperations_invalidIndices_leaveTasksUnchanged() {
+        Task first = new Todo("first");
+        TaskList tasks = new TaskList(first);
+        for (int index : new int[]{-1, 1, Integer.MAX_VALUE}) {
+            assertThrows(IndexOutOfBoundsException.class, () -> tasks.get(index));
+            assertThrows(IndexOutOfBoundsException.class, () -> tasks.mark(index));
+            assertThrows(IndexOutOfBoundsException.class, () -> tasks.unmark(index));
+            assertThrows(IndexOutOfBoundsException.class, () -> tasks.delete(index));
+            assertEquals(List.of(first), tasks.asList());
+            assertFalse(first.isDone());
+        }
+    }
+
     @Test
     void constructor_varargsArray_isCopiedInOrder() {
         Task first = new Todo("first");
