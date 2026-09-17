@@ -1,12 +1,10 @@
 package gongrilla.gui;
 
 import gongrilla.Gongrilla;
-import javafx.application.Platform;
 import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -14,9 +12,6 @@ import javafx.util.Duration;
 
 /** Controls Gongrilla's main window. */
 public class MainWindow {
-    @FXML
-    private ScrollPane scrollPane;
-
     @FXML
     private VBox dialogContainer;
 
@@ -44,12 +39,6 @@ public class MainWindow {
     /** Supplies a shutdown action so tests can observe exit without stopping JavaFX. */
     MainWindow(Runnable exitAction) {
         this.exitAction = exitAction;
-    }
-
-    /** Initializes scrolling after FXMLLoader injects the controls. */
-    @FXML
-    public void initialize() {
-        scrollPane.setFitToWidth(true);
     }
 
     /**

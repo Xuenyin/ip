@@ -15,6 +15,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gongrilla.task.Deadline;
@@ -129,7 +130,7 @@ public class Storage {
     private void replayRecord(String line, ArrayList<Task> tasks) {
         String[] fields = line.split(" \\| ", -1);
         switch (fields[0]) {
-            case "A" -> tasks.add(createTask(slice(fields, 1)));
+            case "A" -> tasks.add(createTask(Arrays.copyOfRange(fields, 1, fields.length)));
             case "X" -> tasks.remove(readIndex(fields, tasks.size()));
             case "M" -> tasks.get(readIndex(fields, tasks.size())).markDone();
             case "U" -> tasks.get(readIndex(fields, tasks.size())).unmarkDone();
@@ -337,16 +338,4 @@ public class Storage {
         }
     }
 
-    /**
-     * Copies the suffix of an array beginning at the supplied index.
-     *
-     * @param values source values.
-     * @param start index of the first value to copy.
-     * @return copied suffix.
-     */
-    private String[] slice(String[] values, int start) {
-        String[] result = new String[values.length - start];
-        System.arraycopy(values, start, result, 0, result.length);
-        return result;
-    }
 }

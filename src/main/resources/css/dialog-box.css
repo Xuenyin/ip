@@ -37,17 +37,6 @@
     -fx-font-weight: bold;
 }
 
-.profile-frame {
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, 0.2), 10, 0.5, 5, 5);
-}
-
-.profile-border {
-    -fx-fill: transparent;
-    -fx-stroke: black;
-    -fx-stroke-width: 3px;
-    -fx-stroke-type: inside;
-}
-
 .help-card {
     -fx-background-color: #172d1f;
     -fx-background-radius: 12px;

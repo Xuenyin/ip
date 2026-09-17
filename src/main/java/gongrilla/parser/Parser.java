@@ -113,10 +113,7 @@ public class Parser {
         if (parts[1].isBlank()) {
             throw new GongrillaException("When task due? Gongrilla need date or date-time.");
         }
-        String name = parts[0].trim();
-        String dueDateInput = parts[1].trim();
-        LocalDateTime byDateTime = parseDateTime(dueDateInput);
-        Deadline deadline = new Deadline(name, byDateTime);
+        Deadline deadline = new Deadline(parts[0], parseDateTime(parts[1]));
 
         return new AddCommand(deadline);
     }
@@ -143,13 +140,7 @@ public class Parser {
             throw new GongrillaException(
                     "When event start? When event end? Gongrilla need know.");
         }
-        String name = parts[0].trim();
-        String startTimeInput = parts[1].trim();
-        String endTimeInput = parts[2].trim();
-        LocalDateTime fromDateTime = parseDateTime(startTimeInput);
-        LocalDateTime toDateTime = parseDateTime(endTimeInput);
-
-        Event event = new Event(name, fromDateTime, toDateTime);
+        Event event = new Event(parts[0], parseDateTime(parts[1]), parseDateTime(parts[2]));
 
         return new AddCommand(event);
     }
@@ -228,7 +219,7 @@ public class Parser {
      * @return parsed date and time.
      * @throws DateTimeParseException if none of the supported formats match.
      */
-    private static LocalDateTime parseDateTime(String value) throws GongrillaException {
+    private static LocalDateTime parseDateTime(String value) {
         value = value.replaceAll("\\s+", " ");
         for (DateTimeFormatter formatter : INPUT_DATE_TIME_FORMATS) {
             try {

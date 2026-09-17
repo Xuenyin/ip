@@ -37,8 +37,9 @@ public class AddCommand extends Command {
     @Override
     public void execute(TaskList tasks, Ui ui, Storage storage)
             throws GongrillaException, IOException {
+        String normalizedName = task.getName().strip().replaceAll("(?U)\\s+", " ");
         for (Task existing : tasks.asList()) {
-            if (hasSameDetails(existing)) {
+            if (hasSameDetails(existing, normalizedName)) {
                 throw new GongrillaException("Gongrilla already have that task. Use list to find it.");
             }
         }
@@ -54,10 +55,9 @@ public class AddCommand extends Command {
     }
 
     /** Compares type, normalized description and dates, ignoring completion state. */
-    private boolean hasSameDetails(Task existing) {
-        String name = task.getName().strip().replaceAll("(?U)\\s+", " ");
+    private boolean hasSameDetails(Task existing, String normalizedName) {
         String existingName = existing.getName().strip().replaceAll("(?U)\\s+", " ");
-        if (existing.getType() != task.getType() || !existingName.equalsIgnoreCase(name)) {
+        if (existing.getType() != task.getType() || !existingName.equalsIgnoreCase(normalizedName)) {
             return false;
         }
         if (task instanceof Deadline deadline && existing instanceof Deadline other) {
