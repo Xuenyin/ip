@@ -2,18 +2,53 @@
 
 <img src="Ui.png" alt="Gongrilla GUI">
 
-Gongrilla is a friendly task-management chatbot. Type a command in the input box (or terminal) and press **Enter** or click `Send` to get started!
+Gongrilla is a friendly task-management chatbot. Type a command in the terminal and press **Enter**.
 
 ---
 
 ## Quick start
 
-1. Start Gongrilla.
-2. Type `help` to see the command reference.
-3. Add a task, for example: `todo buy bananas`.
-4. Type `list` to view your tasks and their numbers.
+1. Ensure you have **Java 25 or above** installed on your computer.
+
+   Verify your Java version by running:
+
+   ```
+   java -version
+   ```
+
+2. Download the latest Gongrilla JAR file.
+3. Move the JAR file into a folder where you would like Gongrilla and its task data to be stored.
+4. Open your terminal and navigate to that folder.
+5. Launch Gongrilla:
+
+   ```
+   java -jar gongrilla.jar
+   ```
+
+> [!NOTE]
+> The exact JAR filename may differ depending on the downloaded version.
+
+Gongrilla automatically saves your tasks locally and restores them the next time you launch the application.
 
 ---
+
+## Command overview
+
+| Command | Format | Example |
+| --- | --- | --- |
+| Get help | `help` | `help` |
+| Add a task | `todo TASK` | `todo buy bananas` |
+| Add a deadline | `deadline TASK /by DATE [TIME]` | `deadline submit report /by 20/9/2026 1800` |
+| Add an event | `event EVENT /from START /to END` | `event team meeting /from 20/9/2026 1200 /to 20/9/2026 1300` |
+| View all tasks | `list` | `list` |
+| Find tasks | `find KEYWORD` | `find report` |
+| Mark a task done | `mark NUMBER` | `mark 1` |
+| Mark a task incomplete | `unmark NUMBER` | `unmark 1` |
+| Delete a task | `delete NUMBER` | `delete 2` |
+| Exit Gongrilla | `bye` | `bye` |
+
+---
+
 ## Features
 
 ### Get help: `help`
