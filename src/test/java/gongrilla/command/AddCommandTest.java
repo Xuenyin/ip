@@ -2,11 +2,14 @@ package gongrilla.command;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -26,6 +29,23 @@ import gongrilla.ui.Ui;
 class AddCommandTest {
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void execute_saveFailure_preservesTasksAndSuppressesSuccessReply() throws Exception {
+        Path parent = temporaryDirectory.resolve("blocked");
+        Files.writeString(parent, "keep");
+        Task original = new Todo("existing");
+        TaskList tasks = new TaskList(original);
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Ui ui = new Ui(new ByteArrayInputStream(new byte[0]), new PrintStream(output));
+
+        assertThrows(IOException.class, () -> new AddCommand(new Todo("new")).execute(
+                tasks, ui, new Storage(parent.resolve("tasks.txt"))));
+
+        assertEquals(List.of(original), tasks.asList());
+        assertEquals("", output.toString());
+        assertEquals("keep", Files.readString(parent));
+    }
 
     @Test
     void execute_supportedTasks_derivesLabelsFromTasks() throws Exception {

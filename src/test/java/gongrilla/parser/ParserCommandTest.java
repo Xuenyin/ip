@@ -97,6 +97,17 @@ class ParserCommandTest {
     }
 
     @Test
+    void parse_unicodeWhitespaceInRequiredFields_reportsMissingDetails() {
+        assertParsingError("deadline \u2003 /by 1/1/2026", "No task. What Gongrilla supposed to do?");
+        assertParsingError("deadline task /by \u2003", "When task due? Gongrilla need date or date-time.");
+        assertParsingError("event \u2003 /from 1/1/2026 /to 2/1/2026", "Task missing. No task, no banana.");
+        assertParsingError("event task /from \u2003 /to 2/1/2026",
+                "When event start? When event end? Gongrilla need know.");
+        assertParsingError("event task /from 1/1/2026 /to \u2003",
+                "When event start? When event end? Gongrilla need know.");
+    }
+
+    @Test
     void parse_missingTaskDetails_preservesSpecificErrors() {
         assertParsingError("todo   ", "Empty task. What Gongrilla do? Give something.");
         assertParsingError("deadline report", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
