@@ -28,4 +28,6 @@ jobs:
           java-package: jdk+fx
 
       - name: Build and check with Gradle
-        run: ./gradlew check
+        uses: GabrielBB/xvfb-action@v1
+        with:
+          run: ./gradlew build
