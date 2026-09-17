@@ -5,6 +5,7 @@ import javafx.animation.PauseTransition;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
@@ -17,6 +18,9 @@ public class MainWindow {
 
     @FXML
     private TextField userInput;
+
+    @FXML
+    private ScrollPane scrollPane;
 
     @FXML
     private Button sendButton;
@@ -57,6 +61,7 @@ public class MainWindow {
                 + "  \\______/  \n"
                 + "sup";
         dialogContainer.getChildren().add(DialogBox.getGongrillaDialog(welcome, gongrillaImage, "Welcome"));
+        scrollToBottom();
     }
 
     /** Displays the user's command and Gongrilla's response. */
@@ -71,6 +76,7 @@ public class MainWindow {
 
         DialogBox reply = DialogBox.getGongrillaDialog(response, gongrillaImage, commandType);
         dialogContainer.getChildren().addAll(DialogBox.getUserDialog(input, userImage), reply);
+        scrollToBottom();
         userInput.clear();
         if ("ExitCommand".equals(commandType)) {
             isExiting = true;
@@ -80,5 +86,10 @@ public class MainWindow {
             exitDelay.setOnFinished(event -> exitAction.run());
             exitDelay.playFromStart();
         }
+    }
+
+    /** Moves the conversation view to the newest message after JavaFX lays it out. */
+    private void scrollToBottom() {
+        Platform.runLater(() -> scrollPane.setVvalue(1.0));
     }
 }
