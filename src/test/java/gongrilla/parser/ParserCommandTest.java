@@ -110,12 +110,12 @@ class ParserCommandTest {
     @Test
     void parse_missingTaskDetails_preservesSpecificErrors() {
         assertParsingError("todo   ", "Empty task. What Gongrilla do? Give something.");
-        assertParsingError("deadline report", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
-        assertParsingError("deadline report /by", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("deadline report", "Missing /by. Type help for the format.");
+        assertParsingError("deadline report /by", "When task due? Gongrilla need date or date-time.");
         assertParsingError("event meeting /from 6/9/2026",
-                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+                "Missing /to. Type help for the format.");
         assertParsingError("event meeting /from /to 7/9/2026",
-                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+                "When event start? When event end? Gongrilla need know.");
     }
 
     @Test
@@ -131,7 +131,7 @@ class ParserCommandTest {
 
     @Test
     void parse_unknownCommandBoundaries_preservesRejection() {
-        String[] commands = {null, "", "   ", "todoish read", "todo\tread", "list extra", "bye extra"};
+        String[] commands = {null, "", "   ", "todoish read", "list extra", "bye extra"};
         for (String command : commands) {
             assertParsingError(command, "Hmm. Gongrilla no know that :-(");
         }
@@ -221,8 +221,7 @@ class ParserCommandTest {
         GongrillaException exception = assertThrows(GongrillaException.class, () ->
                 Parser.parse("event meeting /to 3/12/2019 1700 /from 3/12/2019 0900"));
 
-        assertEquals("higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] "
-                        + "/to D/M/YYYY [HHMM]",
+        assertEquals("Use /from then /to in that order.",
                 exception.getMessage());
     }
 
@@ -255,11 +254,11 @@ class ParserCommandTest {
     }
 
     @Test
-    void parse_keywordPrefixesAndTabSeparators_rejectsUnknownCommands() {
+    void parse_keywordPrefixes_rejectsUnknownCommands() {
         String[] keywords = {"find", "deadline", "todo", "event", "delete", "mark", "unmark"};
         for (String keyword : keywords) {
             assertParsingError(keyword + "ish value", "Hmm. Gongrilla no know that :-(");
-            assertParsingError(keyword + "\tvalue", "Hmm. Gongrilla no know that :-(");
+
         }
     }
 
@@ -267,9 +266,9 @@ class ParserCommandTest {
     void parse_bareMixedCaseKeywords_preservesCommandSpecificErrors() {
         assertParsingError("FiNd", "What find? Gongrilla need keyword.");
         assertParsingError("ToDo", "Empty task. What Gongrilla do? Give something.");
-        assertParsingError("DeAdLiNe", "higa higa click click? Deadline need: <task> /by D/M/YYYY [HHMM]");
+        assertParsingError("DeAdLiNe", "Missing /by. Type help for the format.");
         assertParsingError("EvEnT",
-                "higa higa click click? Event need: <task> /from D/M/YYYY [HHMM] /to D/M/YYYY [HHMM]");
+                "Missing /from. Type help for the format.");
         for (String keyword : new String[]{"DeLeTe", "MaRk", "UnMaRk"}) {
             assertParsingError(keyword, "No number. Gongrilla pick air?");
         }

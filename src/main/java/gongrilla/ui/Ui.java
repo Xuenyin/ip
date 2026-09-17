@@ -108,7 +108,7 @@ public class Ui {
                 "",
                 "Dates:",
                 "D/M/YYYY or YYYY-MM-DD; optional 24-hour HHMM.",
-                "if no time, Gongrilla use midnight. Event end must not be before start.",
+                "if no time, Gongrilla use midnight. Event end must be after start.",
                 " ",
                 "Examples:",
                 "todo buy bananas",
@@ -227,6 +227,7 @@ public class Ui {
     public void showSavingError(String message) {
         printLines(
                 "Gongrilla cannot save that change: " + message,
-                "Task list was not changed.");
+                "Task list was not changed.",
+                "Check file permissions, free disk space, and other Gongrilla windows before retrying.");
     }
 }

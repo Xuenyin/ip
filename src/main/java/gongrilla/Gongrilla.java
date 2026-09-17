@@ -83,7 +83,8 @@ public class Gongrilla {
     public String getResponse(String input) {
         commandType = "Error";
         if (loadingError != null) {
-            return "Gongrilla cannot read saved tasks: " + loadingError;
+            return "Gongrilla cannot read saved tasks: " + loadingError
+                    + "\nCheck the data file and its permissions, then restart Gongrilla.";
         }
 
         ByteArrayOutputStream responseBytes = new ByteArrayOutputStream();

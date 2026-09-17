@@ -40,7 +40,7 @@ class ParserDateBoundaryTest {
         Storage storage = new Storage(temporaryDirectory.resolve("tasks.txt"));
         Ui ui = new Ui(InputStream.nullInputStream(), new PrintStream(new ByteArrayOutputStream()));
         for (String date : dates) {
-            Parser.parse("deadline task /by " + date).execute(tasks, ui, storage);
+            Parser.parse("deadline task " + tasks.size() + " /by " + date).execute(tasks, ui, storage);
             Deadline task = (Deadline) tasks.get(tasks.size() - 1);
             assertEquals(LocalDateTime.of(2024, 2, 29, 0, 0), task.getBy(), date);
         }

@@ -7,8 +7,11 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.io.IOException;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,28 @@ import gongrilla.task.Todo;
 class StorageBoundaryTest {
     @TempDir
     private Path temporaryDirectory;
+
+    @Test
+    void append_existingFileWithoutFinalNewline_keepsRecordsSeparate() throws IOException {
+        Path path = temporaryDirectory.resolve("tasks.txt");
+        Files.writeString(path, "T | 0 | original");
+        Storage storage = new Storage(path);
+        storage.appendAdd(new Todo("new"));
+        assertEquals(List.of("original", "new"), storage.load().stream().map(Task::getName).toList());
+    }
+
+    @Test
+    void append_fileLocked_reportsIoErrorAndPreservesFile() throws IOException {
+        Path path = temporaryDirectory.resolve("locked.txt");
+        Files.writeString(path, "T | 0 | original\n");
+        String before = Files.readString(path);
+        try (FileChannel channel = FileChannel.open(path, StandardOpenOption.WRITE);
+                FileLock lock = channel.lock()) {
+            assertTrue(lock.isValid());
+            assertThrows(IOException.class, () -> new Storage(path).appendAdd(new Todo("new")));
+        }
+        assertEquals(before, Files.readString(path));
+    }
 
     @Test
     void constructor_nullPath_rejectsInvalidConfiguration() {

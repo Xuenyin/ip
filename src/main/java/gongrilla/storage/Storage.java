@@ -2,6 +2,10 @@ package gongrilla.storage;
 
 import java.io.IOException;
 import java.net.URLDecoder;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.channels.FileLock;
+import java.nio.channels.OverlappingFileLockException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -92,7 +96,7 @@ public class Storage {
      */
     public ArrayList<Task> load() throws IOException {
         ArrayList<Task> tasks = new ArrayList<>();
-        if (!Files.exists(filePath)) {
+        if (Files.notExists(filePath)) {
             return tasks;
         }
         if (!Files.isRegularFile(filePath)) {
@@ -242,8 +246,40 @@ public class Storage {
         if (parent != null) {
             Files.createDirectories(parent);
         }
-        Files.writeString(filePath, record + System.lineSeparator(), StandardCharsets.UTF_8,
-                StandardOpenOption.CREATE, StandardOpenOption.APPEND);
+        try (FileChannel channel = FileChannel.open(filePath, StandardOpenOption.CREATE,
+                StandardOpenOption.READ, StandardOpenOption.WRITE);
+                FileLock lock = channel.tryLock()) {
+            if (lock == null) {
+                throw new IOException("Task file is in use. Close other Gongrilla windows and try again.");
+            }
+            long originalSize = channel.size();
+            String separator = "";
+            if (originalSize > 0) {
+                ByteBuffer lastByte = ByteBuffer.allocate(1);
+                channel.read(lastByte, originalSize - 1);
+                if (lastByte.get(0) != '\n' && lastByte.get(0) != '\r') {
+                    separator = System.lineSeparator();
+                }
+            }
+            channel.position(originalSize);
+            ByteBuffer bytes = StandardCharsets.UTF_8.encode(separator + record + System.lineSeparator());
+            try {
+                while (bytes.hasRemaining()) {
+                    channel.write(bytes);
+                }
+                channel.force(true);
+            } catch (IOException exception) {
+                try {
+                    channel.truncate(originalSize);
+                    channel.force(true);
+                } catch (IOException rollbackError) {
+                    exception.addSuppressed(rollbackError);
+                }
+                throw exception;
+            }
+        } catch (OverlappingFileLockException exception) {
+            throw new IOException("Task file is in use. Try again after the other operation finishes.", exception);
+        }
     }
 
     /**

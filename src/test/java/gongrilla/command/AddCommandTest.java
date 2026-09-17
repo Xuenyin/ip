@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
@@ -29,6 +30,22 @@ import gongrilla.ui.Ui;
 class AddCommandTest {
     @TempDir
     Path temporaryDirectory;
+
+    @Test
+    void execute_accessDenied_propagatesErrorWithoutChangingTasks() {
+        TaskList tasks = new TaskList();
+        ByteArrayOutputStream output = new ByteArrayOutputStream();
+        Storage deniedStorage = new Storage(temporaryDirectory.resolve("denied.txt")) {
+            @Override
+            public void appendAdd(Task task) throws IOException {
+                throw new AccessDeniedException("denied.txt");
+            }
+        };
+        assertThrows(AccessDeniedException.class, () -> new AddCommand(new Todo("new")).execute(tasks,
+                new Ui(new ByteArrayInputStream(new byte[0]), new PrintStream(output)), deniedStorage));
+        assertEquals(0, tasks.size());
+        assertEquals("", output.toString());
+    }
 
     @Test
     void execute_saveFailure_preservesTasksAndSuppressesSuccessReply() throws Exception {

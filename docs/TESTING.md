@@ -22,10 +22,10 @@ those processes' JaCoCo data with the ordinary JUnit coverage report.
 
 ### Verified on 17 September 2026
 
-- Windows, Java 25.0.4: **101 tests passed**, including Checkstyle and the
+- Windows, Java 25.0.4: **109 tests passed**, including Checkstyle and the
   configured coverage check.
-- Non-GUI production code: **442/442 lines covered (100%)**.
-- All production code, including GUI: **513/551 lines covered (93.1%)**.
+- Non-GUI production code: **490/498 lines covered (98.4%)**.
+- All production code, including GUI: **561/607 lines covered (92.4%)**.
 - Console startup, EOF, explicit exit, corrupt-data startup, and persistence.
 - English (`en_US`) and Chinese (`zh_CN`) JVM language settings in separate
   processes; Chinese text survives storage and dates retain English formatting.
@@ -39,8 +39,8 @@ those processes' JaCoCo data with the ordinary JUnit coverage report.
 Line coverage is not proof that every input or environment works. Remaining
 non-GUI branch gaps are defensive assertions for internal invariants and the
 storage path-without-a-parent case (the application uses `data/gongrilla.txt`).
-GUI launch failures and some input/scroll event paths remain outside automated
-coverage. No production behavior was changed to obtain these coverage figures.
+Partial-write rollback and cross-process lock contention are not fault-injected; the suite covers same-process locks and simulated access denial. GUI launch failures and some input/scroll event paths remain outside automated
+coverage. The error-handling update adds strict event ranges, duplicate detection, parameter validation, and journal write protection.
 
 ## Manual checks still to perform
 
