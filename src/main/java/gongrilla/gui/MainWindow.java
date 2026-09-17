@@ -1,11 +1,15 @@
 package gongrilla.gui;
 
 import gongrilla.Gongrilla;
+import javafx.animation.PauseTransition;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 
 /** Controls Gongrilla's main window. */
 public class MainWindow {
@@ -18,11 +22,28 @@ public class MainWindow {
     @FXML
     private TextField userInput;
 
+    @FXML
+    private Button sendButton;
+
+    private final Runnable exitAction;
+    private final PauseTransition exitDelay = new PauseTransition(Duration.seconds(2));
+    private boolean isExiting;
+
     private final Image userImage = new Image(
             MainWindow.class.getResourceAsStream("/images/Bananini.png"));
     private final Image gongrillaImage = new Image(
             MainWindow.class.getResourceAsStream("/images/Gongrillini.png"));
     private Gongrilla gongrilla;
+
+    /** Creates the controller with the normal JavaFX shutdown action. */
+    public MainWindow() {
+        this(Platform::exit);
+    }
+
+    /** Supplies a shutdown action so tests can observe exit without stopping JavaFX. */
+    MainWindow(Runnable exitAction) {
+        this.exitAction = exitAction;
+    }
 
     /** Initializes scrolling after FXMLLoader injects the controls. */
     @FXML
@@ -51,6 +72,9 @@ public class MainWindow {
     /** Displays the user's command and Gongrilla's response. */
     @FXML
     private void handleUserInput() {
+        if (isExiting) {
+            return;
+        }
         String input = userInput.getText();
         String response = gongrilla.getResponse(input);
         String commandType = gongrilla.getCommandType();
@@ -59,5 +83,13 @@ public class MainWindow {
                 DialogBox.getUserDialog(input, userImage),
                 DialogBox.getGongrillaDialog(response, gongrillaImage, commandType));
         userInput.clear();
+        if ("ExitCommand".equals(commandType)) {
+            isExiting = true;
+            userInput.setDisable(true);
+            sendButton.setDisable(true);
+            // Keep the farewell visible without blocking JavaFX's UI thread.
+            exitDelay.setOnFinished(event -> exitAction.run());
+            exitDelay.playFromStart();
+        }
     }
 }
